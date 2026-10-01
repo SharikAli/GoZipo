@@ -4,5 +4,7 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>GoZipo uses your location to set your pickup point and show nearby drivers.</string>
 </dict>
 </plist>

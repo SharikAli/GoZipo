@@ -15,6 +15,7 @@ kotlin {
                 implementation(libs.coil.network.ktor)
 
                 implementation(libs.jetbrains.compose.components.resources)
+                implementation(libs.jetbrains.compose.material.icons.extended)
                 implementation(libs.compose.uiToolingPreview)
             }
         }

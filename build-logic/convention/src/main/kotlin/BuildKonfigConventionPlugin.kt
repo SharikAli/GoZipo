@@ -17,12 +17,25 @@ class BuildKonfigConventionPlugin: Plugin<Project> {
             extensions.configure<BuildKonfigExtension> {
                 packageName.set(target.pathToPackageName())
                 defaultConfigs {
-                    val apiKey = gradleLocalProperties(rootDir, rootProject.providers)
+                    val localProperties = gradleLocalProperties(rootDir, rootProject.providers)
+                    val apiKey = localProperties
                         .getProperty("API_KEY")
                         ?: throw IllegalStateException(
                             "Missing API_KEY property in local.properties"
                         )
                     buildConfigField(FieldSpec.Type.STRING, "API_KEY", apiKey)
+
+                    // HTTP logging; sensitive values are masked unless HTTP_LOG_SENSITIVE_DATA=true (development only)
+                    buildConfigField(
+                        FieldSpec.Type.BOOLEAN,
+                        "HTTP_LOGGING_ENABLED",
+                        localProperties.getProperty("HTTP_LOGGING_ENABLED") ?: "true"
+                    )
+                    buildConfigField(
+                        FieldSpec.Type.BOOLEAN,
+                        "HTTP_LOG_SENSITIVE_DATA",
+                        localProperties.getProperty("HTTP_LOG_SENSITIVE_DATA") ?: "true"
+                    )
                 }
             }
         }

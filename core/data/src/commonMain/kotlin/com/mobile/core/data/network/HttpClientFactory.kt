@@ -47,13 +47,23 @@ class HttpClientFactory(
                 socketTimeoutMillis = 20_000L
                 requestTimeoutMillis = 20_000L
             }
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        goZipoLogger.debug(message)
+            if (BuildKonfig.HTTP_LOGGING_ENABLED) {
+                install(Logging) {
+                    val revealSensitiveData = BuildKonfig.HTTP_LOG_SENSITIVE_DATA
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            goZipoLogger.debug(
+                                if (revealSensitiveData) message else HttpLogSanitizer.sanitize(message)
+                            )
+                        }
+                    }
+                    level = LogLevel.ALL
+                    if (!revealSensitiveData) {
+                        sanitizeHeader(placeholder = HttpLogSanitizer.MASK) { header ->
+                            HttpLogSanitizer.isSensitiveHeader(header)
+                        }
                     }
                 }
-                level = LogLevel.ALL
             }
             install(WebSockets) {
                 pingIntervalMillis = 20_000L

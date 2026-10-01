@@ -1,7 +1,6 @@
 package com.mobile.gozipo
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -9,6 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.mobile.auth.presentation.navigation.AuthGraphRoutes
+import com.mobile.core.designsystem.theme.GoZipoTheme
 import com.mobile.core.presentation.util.ObserveAsEvents
 import com.mobile.gozipo.navigation.DeepLinkListener
 import com.mobile.gozipo.navigation.NavigationRoot
@@ -43,7 +43,7 @@ fun App(
         }
     }
 
-    MaterialTheme {
+    GoZipoTheme(darkTheme = isDarkTheme) {
         if(!state.isCheckingAuth) {
             NavigationRoot(
                 navController = navController,
