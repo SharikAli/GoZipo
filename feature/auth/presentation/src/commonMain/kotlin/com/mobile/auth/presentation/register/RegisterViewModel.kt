@@ -4,6 +4,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobile.auth.domain.authservice.AuthService
+import com.mobile.auth.domain.passkey.PasskeyAuthenticator
 import com.mobile.core.domain.util.DataError
 import com.mobile.core.domain.util.onFailure
 import com.mobile.core.domain.util.onSuccess
@@ -30,7 +31,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val authService: AuthService
+    private val authService: AuthService,
+    passkeyAuthenticator: PasskeyAuthenticator
 ) : ViewModel() {
 
     private val eventChannel = Channel<RegisterEvent>()
@@ -38,7 +40,9 @@ class RegisterViewModel(
 
     private var hasLoadedInitialData = false
 
-    private val _state = MutableStateFlow(RegisterState())
+    private val _state = MutableStateFlow(
+        RegisterState(isPasskeySupported = passkeyAuthenticator.isSupported)
+    )
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
@@ -49,7 +53,7 @@ class RegisterViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = RegisterState()
+            initialValue = _state.value
         )
 
     private val isEmailValidFlow = snapshotFlow { state.value.emailTextState.text.toString() }

@@ -1,7 +1,7 @@
 package com.mobile.core.designsystem.components.textfields
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -32,11 +32,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -195,7 +194,7 @@ private fun GoZipoTextFieldLayout(
             val borderColor = when {
                 isError -> scheme.error
                 isFocused -> scheme.tertiary
-                else -> androidx.compose.ui.graphics.Color.Transparent
+                else -> Color.Transparent
             }
             Modifier
                 .fillMaxWidth()
@@ -284,11 +283,17 @@ private fun GoZipoTextFieldPreview() {
                     isError = true,
                     supportingText = "Enter a valid email address"
                 )
-                var visible by remember { mutableStateOf(false) }
                 GoZipoPasswordTextField(
                     state = rememberTextFieldState("Secret123"),
-                    isPasswordVisible = visible,
-                    onToggleVisibilityClick = { visible = !visible },
+                    isPasswordVisible = false,
+                    onToggleVisibilityClick = { },
+                    title = "Password",
+                    supportingText = "At least 9 characters"
+                )
+                GoZipoPasswordTextField(
+                    state = rememberTextFieldState("Secret123"),
+                    isPasswordVisible = true,
+                    onToggleVisibilityClick = { },
                     title = "Password",
                     supportingText = "At least 9 characters"
                 )

@@ -2,6 +2,7 @@ package com.mobile.gozipo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mobile.auth.domain.authservice.AuthService
 import com.mobile.core.data.util.PlatformUtils
 import com.mobile.core.domain.auth.SessionStorage
 import com.mobile.core.domain.notification.DeviceTokenService
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val sessionStorage: SessionStorage,
+    private val authService: AuthService,
     private val pushNotificationService: PushNotificationService,
     private val deviceTokenService: DeviceTokenService
 ) : ViewModel() {
@@ -90,6 +92,19 @@ class MainViewModel(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    /**
+     * Revokes the refresh token on the backend (best effort), then clears the
+     * session; [observeSession] sees it and emits [MainEvent.OnSessionExpired].
+     */
+    fun logout() {
+        viewModelScope.launch {
+            sessionStorage.observeAuthInfo().firstOrNull()?.refreshToken?.let { refreshToken ->
+                authService.logout(refreshToken)
+            }
+            sessionStorage.set(null)
+        }
     }
 
     private fun registerDeviceToken(token: String, platform: String) {

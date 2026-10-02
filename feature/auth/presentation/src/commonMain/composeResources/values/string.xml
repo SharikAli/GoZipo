@@ -1,33 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <string name="welcome_to_chirp">Welcome to Chirp!</string>
-    <string name="welcome_back">Welcome back!</string>
+    <string name="welcome_back">Welcome back</string>
+    <string name="login_subtitle">Log in to book your next ride</string>
+    <string name="create_account_title">Create your account</string>
+    <string name="create_account_subtitle">Get a ride at your price in minutes</string>
     <string name="forgot_password">Forgot password?</string>
+    <string name="forgot_password_title">Reset your password</string>
+    <string name="forgot_password_subtitle">Enter your account's email and we'll send you a link to set a new password</string>
     <string name="set_new_password">Set a new password</string>
+    <string name="set_new_password_subtitle">Choose a password you don't use anywhere else</string>
     <string name="new_password">New password</string>
-    <string name="account_successfully_created">Chirp account successfully created!</string>
-    <string name="verification_email_sent_to_x">We've sent a verification email to %1$s</string>
+    <string name="account_successfully_created">Account created!</string>
+    <string name="verify_your_email">Verify your email!</string>
+    <string name="verification_email_sent_to_x">We've sent a verification email to %1$s. Open the link in it to activate your account.</string>
     <string name="resend_verification_email">Resend verification email</string>
-    <string name="resent_verification_email">Successfully resent verification email</string>
-    <string name="verifying_account">Verifying account...</string>
-    <string name="email_verified_successfully">Email verified successfully!</string>
-    <string name="email_verified_failed">Failed to verify your email</string>
+    <string name="resent_verification_email">Verification email sent again</string>
+    <string name="verifying_account">Verifying your account…</string>
+    <string name="verifying_account_desc">This only takes a moment</string>
+    <string name="email_verified_successfully">Email verified!</string>
+    <string name="email_verified_failed">Couldn't verify your email</string>
     <string name="email_verified_successfully_desc">
         Your email has been verified. You can now log in with your credentials.
     </string>
     <string name="email_verified_failed_desc">
-        Unable to verify your email. Maybe the link is invalid or has expired.
+        The link may be invalid or expired. Log in to get a new verification email.
     </string>
     <string name="close">Close</string>
+    <string name="back">Back</string>
     <string name="submit">Submit</string>
+    <string name="send_reset_link">Send reset link</string>
+    <string name="save_password">Save password</string>
     <string name="username">Username</string>
     <string name="create_account">Create account</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="register">Register</string>
-    <string name="username_placeholder">Chirp</string>
-    <string name="email_placeholder">hello@chirp.com</string>
-    <string name="login">Log In</string>
+    <string name="username_placeholder">ali_khan</string>
+    <string name="email_placeholder">you@example.com</string>
+    <string name="password_placeholder">Your password</string>
+    <string name="login">Log in</string>
+    <string name="back_to_login">Back to log in</string>
+    <string name="or">or</string>
+    <string name="no_account">New to GoZipo?</string>
+    <string name="have_account">Already have an account?</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
     <string name="username_hint">Use between 3 and 20 characters for your username</string>
     <string name="password_hint">Use 9+ characters, at least one digit and one uppercase letter</string>
     <string name="error_account_exists">An account with that email or username already exists</string>
@@ -41,9 +58,29 @@
         It seems like the reset password link is not valid or has expired. Please request a new email.
     </string>
     <string name="forgot_password_email_sent_successfully">
-        We've successfully sent you an email with a link to reset your password
+        If an account exists for that email, we've sent a link to reset your password
     </string>
     <string name="reset_password_successfully">
         Your password has successfully been changed. You can now log in with your new password.
     </string>
+
+    <!-- Passkeys -->
+    <string name="continue_with_passkey">Continue with passkey</string>
+    <string name="passkey_signup_title">Create a passkey</string>
+    <string name="passkey_signup_subtitle">Sign in with your fingerprint, face or screen lock. No password to remember. We'll email you a code to confirm it's you.</string>
+    <string name="passkey_code_title">Enter the code</string>
+    <string name="passkey_code_subtitle">We've sent a 6-digit code to %1$s</string>
+    <string name="send_code">Send code</string>
+    <string name="resend_code">Resend code</string>
+    <string name="code_resent">We've sent you a new code</string>
+    <string name="change_email">Change email</string>
+    <string name="create_passkey">Create passkey</string>
+    <string name="error_passkey_invalid_code">The code is invalid or has expired. Request a new one.</string>
+    <string name="error_passkey_expired">This request has expired. Request a new code and try again.</string>
+    <string name="error_passkey_verification_failed">Your passkey couldn't be verified. Please try again.</string>
+    <string name="error_passkey_already_registered">This passkey is already registered. Log in with it instead.</string>
+    <string name="error_passkey_not_recognized">This passkey isn't recognized. It may have been removed from your account.</string>
+    <string name="error_passkey_not_supported">Passkeys aren't available on this device. Set up a screen lock and make sure Google Password Manager is enabled.</string>
+    <string name="error_passkey_configuration">Passkeys aren't set up correctly for this app version. Use your password for now.</string>
+    <string name="error_passkey_unknown">Something went wrong with your passkey. Please try again.</string>
 </resources>

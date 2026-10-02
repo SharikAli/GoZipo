@@ -60,6 +60,12 @@ Each screen package (e.g. `auth/presentation/login/`) contains `XState`, `XActio
 
 - `initKoin` is called from `GoZipoApplication` on Android and from `iOSApp.init()` on iOS.
 - The backend's passkey RP ID is a temporary trycloudflare tunnel domain used for testing. It changes whenever the tunnel restarts.
-- `App.kt` uses `AuthGraphRoutes.Graph` for both the logged-in and logged-out start destinations, because no post-login graph exists yet.
+- Logged-in users land on `HomeRoute` (`shared/.../home/HomePlaceholderScreen`), a temporary screen with logout, until the customer map flow exists. Logout goes through `MainViewModel.logout()`, which clears the session; the existing session-expired event then navigates back to auth.
 - `design/` holds UI reference screenshots, not code. They are dark-mode only; the light theme is derived from them.
-- Auth screens (`LoginScreen` etc.) are still placeholders; their ViewModels hold the logic.
+- Passkeys (Android only; iOS returns `isSupported = false` and the UI hides passkey buttons):
+  - `PasskeyService` (domain) / `KtorPasskeyService` (data) call `/auth/passkey/*`.
+  - `PasskeyAuthenticator` (domain) is the platform side. It is implemented in `feature/auth/data`: `CredentialManagerPasskeyAuthenticator` on Android, `UnsupportedPasskeyAuthenticator` on iOS, bound through `platformAuthDataModule`. ViewModels inject it and run the whole ceremony themselves.
+  - Credential Manager needs an Activity. It gets it from `CurrentActivityProvider` (`core/data` androidMain), a weak reference to the foreground Activity, eagerly created by Koin.
+  - Login uses usernameless passkey login. `NO_CREDENTIAL` routes to `PasskeySignup` (email → 6-digit code → create passkey).
+  - Never log request/credential JSON.
+- Auth forms use `GoZipoAuthFormLayout` + `GoZipoSnackbarScaffold`; outcome screens use `GoZipoResultLayout`. Previews containing `GoZipoPasswordTextField` need `@Preview(apiLevel = 36)` (layoutlib lacks `ShowSecretsSetting` on API 37).

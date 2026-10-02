@@ -22,6 +22,9 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.koin.compose)
+                implementation(libs.androidx.credentials)
+                // Credential Manager support on Android 13 and lower
+                implementation(libs.androidx.credentials.play.services.auth)
             }
         }
 

@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import com.mobile.auth.presentation.email_verification.EmailVerificationRoot
 import com.mobile.auth.presentation.forgot_password.ForgotPasswordRoot
 import com.mobile.auth.presentation.login.LoginRoot
+import com.mobile.auth.presentation.passkey_signup.PasskeySignupRoot
 import com.mobile.auth.presentation.register.RegisterRoot
 import com.mobile.auth.presentation.register_success.RegisterSuccessRoot
 import com.mobile.auth.presentation.reset_password.ResetPasswordRoot
@@ -32,7 +33,10 @@ fun NavGraphBuilder.authGraph(
                     }
                 },
                 navigateToEmailVerificationScreen = {
-                    navController.navigate(AuthGraphRoutes.RegisterSuccess(it))
+                    navController.navigate(AuthGraphRoutes.RegisterSuccess(it, true))
+                },
+                navigateToPasskeySignup = { email ->
+                    navController.navigate(AuthGraphRoutes.PasskeySignup(email))
                 }
             )
         }
@@ -50,7 +54,16 @@ fun NavGraphBuilder.authGraph(
                         launchSingleTop = true
                         restoreState = true
                     }
+                },
+                onPasskeySignupClick = {
+                    navController.navigate(AuthGraphRoutes.PasskeySignup())
                 }
+            )
+        }
+        composable<AuthGraphRoutes.PasskeySignup> {
+            PasskeySignupRoot(
+                onSignupSuccess = onLoginSuccess,
+                onBackClick = { navController.navigateUp() }
             )
         }
         composable<AuthGraphRoutes.RegisterSuccess> {
@@ -95,7 +108,9 @@ fun NavGraphBuilder.authGraph(
             )
         }
         composable<AuthGraphRoutes.ForgotPassword> {
-            ForgotPasswordRoot()
+            ForgotPasswordRoot(
+                onBackClick = { navController.navigateUp() }
+            )
         }
         composable<AuthGraphRoutes.ResetPassword>(
             deepLinks = listOf(
@@ -110,7 +125,16 @@ fun NavGraphBuilder.authGraph(
                 },
             )
         ) {
-            ResetPasswordRoot()
+            ResetPasswordRoot(
+                onLoginClick = {
+                    navController.navigate(AuthGraphRoutes.Login) {
+                        popUpTo<AuthGraphRoutes.ResetPassword> {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
     }
 }
