@@ -1,5 +1,6 @@
 [versions]
 projectApplicationId = "com.mobile.gozipo"
+projectRiderApplicationId = "com.mobile.gozipo.rider"
 projectVersionName = "1.0"
 projectVersionCode = "1"
 projectMinSdkVersion = "27"

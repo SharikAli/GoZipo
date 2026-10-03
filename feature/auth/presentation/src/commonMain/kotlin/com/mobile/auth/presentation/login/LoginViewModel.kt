@@ -9,6 +9,7 @@ import com.mobile.auth.domain.passkey.PasskeyError
 import com.mobile.auth.domain.passkey.PasskeyService
 import com.mobile.auth.presentation.passkey.toUiTextOrNull
 import com.mobile.core.domain.auth.SessionStorage
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.domain.util.DataError
 import com.mobile.core.domain.util.Result
 import com.mobile.core.domain.util.onFailure
@@ -21,6 +22,8 @@ import gozipo.feature.auth.presentation.generated.resources.error_email_not_veri
 import gozipo.feature.auth.presentation.generated.resources.error_invalid_credentials
 import gozipo.feature.auth.presentation.generated.resources.error_passkey_not_recognized
 import gozipo.feature.auth.presentation.generated.resources.error_passkey_verification_failed
+import gozipo.feature.auth.presentation.generated.resources.error_wrong_app_customer
+import gozipo.feature.auth.presentation.generated.resources.error_wrong_app_rider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,7 +41,8 @@ class LoginViewModel(
     private val authService: AuthService,
     private val passkeyService: PasskeyService,
     private val passkeyAuthenticator: PasskeyAuthenticator,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val appRole: UserRole
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
@@ -56,7 +60,10 @@ class LoginViewModel(
             .distinctUntilChanged()
 
     private val _state = MutableStateFlow(
-        LoginState(isPasskeySupported = passkeyAuthenticator.isSupported)
+        LoginState(
+            isPasskeySupported = passkeyAuthenticator.isSupported,
+            role = appRole
+        )
     )
     val state = _state
         .onStart {
@@ -145,6 +152,13 @@ class LoginViewModel(
                             UiText.Resource(Res.string.error_email_not_verified)
                         }
 
+                        DataError.Remote.CONFLICT -> UiText.Resource(
+                            when (appRole) {
+                                UserRole.CUSTOMER -> Res.string.error_wrong_app_customer
+                                UserRole.RIDER -> Res.string.error_wrong_app_rider
+                            }
+                        )
+
                         else -> error.toUiText()
                     }
 
@@ -232,6 +246,13 @@ class LoginViewModel(
     private fun DataError.Remote.toPasskeyUiText(): UiText = when (this) {
         DataError.Remote.UNAUTHORIZED -> UiText.Resource(Res.string.error_passkey_verification_failed)
         DataError.Remote.NOT_FOUND -> UiText.Resource(Res.string.error_passkey_not_recognized)
+        DataError.Remote.CONFLICT -> UiText.Resource(
+            when (appRole) {
+                UserRole.CUSTOMER -> Res.string.error_wrong_app_customer
+                UserRole.RIDER -> Res.string.error_wrong_app_rider
+            }
+        )
+
         else -> toUiText()
     }
 }

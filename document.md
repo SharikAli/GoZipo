@@ -10,8 +10,8 @@ Tick a box (`- [x]`) when an item is done and verified. Add new items under the 
 | --- | --- | --- |
 | 0 | Project foundation | Done |
 | 1 | Design system | Done |
-| 2 | Customer auth UI + Android passkeys | Done (not committed yet) |
-| 3 | Multi-app setup + Rider app shell | Not started |
+| 2 | Customer auth UI + Android passkeys | Done |
+| 3 | Multi-app setup + Rider app shell | In progress |
 | 4 | Backend ride domain + realtime | Not started |
 | 5 | Location + Mapbox | Not started |
 | 6 | Customer ride flow | Not started |
@@ -26,8 +26,8 @@ GoZipo is a ride-hailing system built to learn Mapbox, with no Google Maps.
 
 | Part | Stack | Location |
 | --- | --- | --- |
-| GoZipo (customer app) | Kotlin + Compose Multiplatform, Android + iOS | this repo |
-| GoZipo Rider (rider app) | Compose Multiplatform | this repo (Phase 3) |
+| GoZipo (customer app) | Kotlin + Compose Multiplatform, Android + iOS | `apps/customer/` |
+| GoZipo Rider (rider app) | Kotlin + Compose Multiplatform, Android + iOS | `apps/rider/` |
 | Backend | Kotlin Spring Boot | `~/development/projects/ride-hailing` |
 
 ### Standing rules
@@ -107,11 +107,11 @@ GoZipo is a ride-hailing system built to learn Mapbox, with no Google Maps.
 | Expired passkey request showed a generic error | 410 maps to `GONE` | App `HttpClientExt`, `DataErrorToUiText` |
 | Logout left tokens in memory when the server call failed | Bearer tokens cleared whatever the result | App `KtorAuthService` |
 
-### Remaining for Phase 2
+### Wrap-up
 
-- [ ] Commit the Phase 2 work (branch `feature/design`) in the app and the backend
-- [ ] Re-test resend verification on the backend after the transaction fix
-- [ ] Optional: "Use a passkey from another device" (QR) option, removed by the fail-fast change
+- [x] Phase 2 work committed in the app and the backend
+- [x] Resend verification re-tested after the transaction fix
+- Not planned: "Use a passkey from another device" (QR). Each phone creates its own passkey.
 
 ---
 
@@ -119,14 +119,51 @@ GoZipo is a ride-hailing system built to learn Mapbox, with no Google Maps.
 
 Goal: one repo produces two apps, GoZipo and GoZipo Rider, that share core modules and auth.
 
-- [ ] Second Android application module for GoZipo Rider (own app ID, name, icon)
-- [ ] Second iOS app target hosting a Rider `MainViewController`
-- [ ] Shared composition root split so each app has its own `App`, navigation root and Koin module list
-- [ ] Auth reused by both apps; each app passes its account role (CUSTOMER or RIDER)
-- [ ] Backend: role stored on the account and returned at login; reject login from the wrong app
-- [ ] Rider app shell: login and a placeholder home screen
-- [ ] Rider onboarding fields (vehicle type, vehicle details) as needed for Phase 7
-- [ ] Update `CLAUDE.md` with the new modules and build commands
+### Project layout
+
+```
+apps/
+  common/              :apps:common - shell shared by both apps (MainViewModel, deep links, appCommonModule)
+  customer/
+    androidApp/        com.mobile.gozipo
+    shared/            composition root, iOS framework CustomerShared
+    iosApp/            Xcode project (GoZipo)
+  rider/
+    androidApp/        com.mobile.gozipo.rider
+    shared/            composition root, iOS framework RiderShared
+    iosApp/            Xcode project (GoZipo Rider)
+core/                  shared by both apps
+feature/
+  auth/                shared by both apps
+  ride/                Phase 4: domain + data for both apps
+  booking/             Phase 6: customer screens
+  driving/             Phase 7: rider screens
+```
+
+### Done
+
+- [x] Customer app moved to `apps/customer/` (Android app, `shared`, Xcode project)
+- [x] Convention plugins: each app sets its own `namespace`/`applicationId`; iOS framework named per app (`CustomerShared`, `RiderShared`)
+- [x] `:apps:common` holds the shell both apps share: `MainViewModel` (session, push token, logout), deep link handler, `appCommonModule(appRole)`
+- [x] Rider Android app (`com.mobile.gozipo.rider`, "GoZipo Rider") and rider `shared` module
+- [x] Rider Xcode project (bundle ID `com.mobile.gozipo.rider`, display name "GoZipo Rider")
+- [x] Rider app shell: auth screens + placeholder home with log out
+- [x] Backend: `role` (CUSTOMER / RIDER) on the account, default CUSTOMER for existing rows; returned in the user object
+- [x] Backend: register, login, passkey sign-up and passkey login take the app's role; an account of the other role gets 409 `ROLE_MISMATCH`
+- [x] App: each app provides its `UserRole` through Koin; auth requests send it; 409 shows "This is a rider/customer account. Log in with the other app."
+- [x] Role-aware login and register subtitles in the rider app
+- [x] Builds verified: both Android APKs, both iOS frameworks, both Xcode projects (simulator)
+- [x] `CLAUDE.md` updated with the new layout and commands
+
+### Remaining
+
+- [ ] Test on device: register and log in with the rider app; a customer account in the rider app (and the other way round) shows the wrong-app message
+- [ ] Firebase: add `com.mobile.gozipo.rider` to the Firebase project, put its `google-services.json` in `apps/rider/androidApp/`, then apply the Google Services plugin there
+- [ ] Passkeys in the rider app: add the rider package and its signing SHA-256 to the backend's `assetlinks.json`
+- [ ] Rider email links: the backend sends one verify/reset URL, which the customer app claims. Decide on role-aware links (for example a separate path or host for rider emails) and add the rider intent filters
+- [ ] Rider app icon and brand variant (it currently reuses the customer icon)
+- [ ] Rider onboarding fields (vehicle type, vehicle details), or move this to Phase 7
+- [ ] Role in the JWT (or a server-side role check) for Phase 4 ride endpoints
 
 ## Phase 4: Backend ride domain + realtime
 

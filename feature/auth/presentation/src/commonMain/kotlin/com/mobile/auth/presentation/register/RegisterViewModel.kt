@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobile.auth.domain.authservice.AuthService
 import com.mobile.auth.domain.passkey.PasskeyAuthenticator
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.domain.util.DataError
 import com.mobile.core.domain.util.onFailure
 import com.mobile.core.domain.util.onSuccess
@@ -32,7 +33,8 @@ import kotlinx.coroutines.launch
 
 class RegisterViewModel(
     private val authService: AuthService,
-    passkeyAuthenticator: PasskeyAuthenticator
+    passkeyAuthenticator: PasskeyAuthenticator,
+    appRole: UserRole
 ) : ViewModel() {
 
     private val eventChannel = Channel<RegisterEvent>()
@@ -41,7 +43,10 @@ class RegisterViewModel(
     private var hasLoadedInitialData = false
 
     private val _state = MutableStateFlow(
-        RegisterState(isPasskeySupported = passkeyAuthenticator.isSupported)
+        RegisterState(
+            isPasskeySupported = passkeyAuthenticator.isSupported,
+            role = appRole
+        )
     )
     val state = _state
         .onStart {

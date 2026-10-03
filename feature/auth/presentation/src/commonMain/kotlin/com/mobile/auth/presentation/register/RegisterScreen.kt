@@ -23,10 +23,12 @@ import com.mobile.core.designsystem.components.layouts.GoZipoSnackbarScaffold
 import com.mobile.core.designsystem.components.textfields.GoZipoPasswordTextField
 import com.mobile.core.designsystem.components.textfields.GoZipoTextField
 import com.mobile.core.designsystem.theme.GoZipoTheme
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.presentation.util.ObserveAsEvents
 import gozipo.feature.auth.presentation.generated.resources.Res
 import gozipo.feature.auth.presentation.generated.resources.create_account
 import gozipo.feature.auth.presentation.generated.resources.create_account_subtitle
+import gozipo.feature.auth.presentation.generated.resources.create_account_subtitle_rider
 import gozipo.feature.auth.presentation.generated.resources.create_account_title
 import gozipo.feature.auth.presentation.generated.resources.email
 import gozipo.feature.auth.presentation.generated.resources.email_placeholder
@@ -86,7 +88,10 @@ fun RegisterScreen(
     GoZipoSnackbarScaffold(snackbarHostState = snackbarHostState) {
         GoZipoAuthFormLayout(
             title = stringResource(Res.string.create_account_title),
-            subtitle = stringResource(Res.string.create_account_subtitle),
+            subtitle = when (state.role) {
+                UserRole.CUSTOMER -> stringResource(Res.string.create_account_subtitle)
+                UserRole.RIDER -> stringResource(Res.string.create_account_subtitle_rider)
+            },
             errorText = state.registrationError?.asString(),
             modifier = Modifier.fillMaxSize()
         ) {

@@ -11,6 +11,7 @@ import com.mobile.auth.domain.passkey.PasskeyCeremony
 import com.mobile.auth.domain.passkey.PasskeyService
 import com.mobile.auth.presentation.passkey.toUiTextOrNull
 import com.mobile.core.domain.auth.SessionStorage
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.domain.util.DataError
 import com.mobile.core.domain.util.Result
 import com.mobile.core.domain.util.onFailure
@@ -19,11 +20,12 @@ import com.mobile.core.domain.validation.EmailValidator
 import com.mobile.core.presentation.util.UiText
 import com.mobile.core.presentation.util.toUiText
 import gozipo.feature.auth.presentation.generated.resources.Res
-import gozipo.feature.auth.presentation.generated.resources.error_account_exists
 import gozipo.feature.auth.presentation.generated.resources.error_passkey_already_registered
 import gozipo.feature.auth.presentation.generated.resources.error_passkey_expired
 import gozipo.feature.auth.presentation.generated.resources.error_passkey_invalid_code
 import gozipo.feature.auth.presentation.generated.resources.error_passkey_verification_failed
+import gozipo.feature.auth.presentation.generated.resources.error_wrong_app_customer
+import gozipo.feature.auth.presentation.generated.resources.error_wrong_app_rider
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -47,6 +49,7 @@ class PasskeySignupViewModel(
     private val passkeyService: PasskeyService,
     private val passkeyAuthenticator: PasskeyAuthenticator,
     private val sessionStorage: SessionStorage,
+    private val appRole: UserRole,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -89,9 +92,10 @@ class PasskeySignupViewModel(
         .map { EmailValidator.validate(it.trim()) }
         .distinctUntilChanged()
 
-    private val isCodeCompleteFlow = snapshotFlow { _state.value.codeTextFieldState.text.toString() }
-        .map { it.length == CODE_LENGTH }
-        .distinctUntilChanged()
+    private val isCodeCompleteFlow =
+        snapshotFlow { _state.value.codeTextFieldState.text.toString() }
+            .map { it.length == CODE_LENGTH }
+            .distinctUntilChanged()
 
     fun onAction(action: PasskeySignupAction) {
         when (action) {
@@ -227,19 +231,20 @@ class PasskeySignupViewModel(
                 }
             }
 
-            val credentialJson = when (val result = passkeyAuthenticator.createPasskey(ceremony.requestJson)) {
-                is Result.Success -> result.data
-                is Result.Failure -> {
-                    // Keep pendingCeremony: "Create passkey" can reopen the sheet without a new code
-                    _state.update {
-                        it.copy(
-                            isCreatingPasskey = false,
-                            error = result.error.toUiTextOrNull()
-                        )
+            val credentialJson =
+                when (val result = passkeyAuthenticator.createPasskey(ceremony.requestJson)) {
+                    is Result.Success -> result.data
+                    is Result.Failure -> {
+                        // Keep pendingCeremony: "Create passkey" can reopen the sheet without a new code
+                        _state.update {
+                            it.copy(
+                                isCreatingPasskey = false,
+                                error = result.error.toUiTextOrNull()
+                            )
+                        }
+                        return@launch
                     }
-                    return@launch
                 }
-            }
 
             // Verifying consumes the ceremony, whatever the outcome
             pendingCeremony = null
@@ -271,7 +276,14 @@ class PasskeySignupViewModel(
     private fun DataError.Remote.toSignupUiText(): UiText = when (this) {
         // The 5-minute ceremony expired: options must come from a new code
         DataError.Remote.GONE -> UiText.Resource(Res.string.error_passkey_expired)
-        DataError.Remote.CONFLICT -> UiText.Resource(Res.string.error_account_exists)
+        // From signup/options: the email belongs to an account of the other app
+        DataError.Remote.CONFLICT -> UiText.Resource(
+            when (appRole) {
+                UserRole.CUSTOMER -> Res.string.error_wrong_app_customer
+                UserRole.RIDER -> Res.string.error_wrong_app_rider
+            }
+        )
+
         else -> toUiText()
     }
 }

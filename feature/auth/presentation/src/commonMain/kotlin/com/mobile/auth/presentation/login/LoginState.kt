@@ -1,6 +1,7 @@
 package com.mobile.auth.presentation.login
 
 import androidx.compose.foundation.text.input.TextFieldState
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.presentation.util.UiText
 
 data class LoginState(
@@ -11,5 +12,6 @@ data class LoginState(
     val isLoggingIn: Boolean = false,
     val isPasskeySupported: Boolean = false,
     val isPasskeyLoggingIn: Boolean = false,
-    val error: UiText? = null
+    val error: UiText? = null,
+    val role: UserRole = UserRole.CUSTOMER
 )

@@ -28,6 +28,7 @@ import com.mobile.core.designsystem.components.textfields.GoZipoPasswordTextFiel
 import com.mobile.core.designsystem.components.textfields.GoZipoTextField
 import com.mobile.core.designsystem.theme.GoZipoTheme
 import com.mobile.core.designsystem.theme.extended
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.presentation.util.ObserveAsEvents
 import gozipo.feature.auth.presentation.generated.resources.Res
 import gozipo.feature.auth.presentation.generated.resources.create_account
@@ -37,6 +38,7 @@ import gozipo.feature.auth.presentation.generated.resources.forgot_password
 import gozipo.feature.auth.presentation.generated.resources.hide_password
 import gozipo.feature.auth.presentation.generated.resources.login
 import gozipo.feature.auth.presentation.generated.resources.login_subtitle
+import gozipo.feature.auth.presentation.generated.resources.login_subtitle_rider
 import gozipo.feature.auth.presentation.generated.resources.no_account
 import gozipo.feature.auth.presentation.generated.resources.password
 import gozipo.feature.auth.presentation.generated.resources.password_placeholder
@@ -90,7 +92,10 @@ fun LoginScreen(
     GoZipoSnackbarScaffold {
         GoZipoAuthFormLayout(
             title = stringResource(Res.string.welcome_back),
-            subtitle = stringResource(Res.string.login_subtitle),
+            subtitle = when (state.role) {
+                UserRole.CUSTOMER -> stringResource(Res.string.login_subtitle)
+                UserRole.RIDER -> stringResource(Res.string.login_subtitle_rider)
+            },
             errorText = state.error?.asString(),
             modifier = Modifier.fillMaxSize()
         ) {

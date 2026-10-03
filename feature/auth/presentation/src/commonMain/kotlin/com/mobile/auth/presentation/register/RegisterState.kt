@@ -1,6 +1,7 @@
 package com.mobile.auth.presentation.register
 
 import androidx.compose.foundation.text.input.TextFieldState
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.presentation.util.UiText
 
 data class RegisterState(
@@ -17,5 +18,6 @@ data class RegisterState(
     val isRegistering: Boolean = false,
     val canRegister: Boolean = false,
     val isPasswordVisible: Boolean = false,
-    val isPasskeySupported: Boolean = false
+    val isPasskeySupported: Boolean = false,
+    val role: UserRole = UserRole.CUSTOMER
 )
