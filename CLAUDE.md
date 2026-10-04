@@ -22,7 +22,7 @@ All UI is shared Compose. Each app's `iosApp/` is only a SwiftUI shell that host
 - Tests in a library module: `./gradlew :core:domain:allTests` (or `:<module>:iosSimulatorArm64Test`)
 - Single test: `./gradlew :apps:customer:shared:testAndroidHostTest --tests "com.mobile.gozipo.SharedLogicAndroidHostTest"`
 
-**Required setup:** `local.properties` must contain `API_KEY=...`. The BuildKonfig convention plugin throws at configuration time without it. The key is sent as the `x-api-key` header on every request.
+**Required setup:** `local.properties` must contain `API_KEY=...` and `APP_LINK_HOST=...`. The convention plugins throw at configuration time without them. The key is sent as the `x-api-key` header on every request. `APP_LINK_HOST` is the public HTTPS host of the email App Links (today the backend's Cloudflare tunnel, the same host as the passkey RP ID); update it whenever the tunnel restarts.
 
 Optional `local.properties` flags: `HTTP_LOGGING_ENABLED` (default `true`) turns Ktor request logging on or off. `HTTP_LOG_SENSITIVE_DATA` (default `false`) disables masking. Masking normally hides auth headers, the API key, tokens, passwords, sign-up codes and passkey credentials (`HttpLogSanitizer`). Only set it to `true` while debugging locally.
 
@@ -70,7 +70,8 @@ Each screen package (e.g. `auth/presentation/login/`) contains `XState`, `XActio
 
 - `initKoin` is called from `GoZipoApplication` / `GoZipoRiderApplication` on Android and from `iOSApp.init()` on iOS.
 - Account roles: an account is CUSTOMER or RIDER, never both. Each app passes its role to `appCommonModule(UserRole.X)`, which provides `UserRole` through Koin. `KtorAuthService`/`KtorPasskeyService` send it on register, login, passkey sign-up and passkey login. The backend answers 409 (`ROLE_MISMATCH`) for an account of the other role, shown as "use the other app" (`role/UserRoleText.kt`).
-- The rider Android app has no `google-services.json` yet and doesn't apply the Google Services plugin, so FCM is off there (device token is null). The rider manifest also has no email deep links, because the customer app claims the verify/reset URLs.
+- Both Android apps apply the Google Services plugin (one Firebase project).
+- Email links are verified Android App Links split by role: `https://<APP_LINK_HOST>/link/{customer|rider}/{verify|reset-password}?token=…`. Each manifest claims only its own role's paths (host via the `${appLinkHost}` manifest placeholder), and `authGraph(emailLinkBaseUrl = emailLinkBaseUrl(role))` matches the same URLs. Never let both apps claim the same path or a custom scheme, or Android shows a chooser.
 - The backend's passkey RP ID is a temporary trycloudflare tunnel domain used for testing. It changes whenever the tunnel restarts.
 - Logged-in users land on `HomeRoute` (`HomePlaceholderScreen` / `RiderHomePlaceholderScreen` in each app's `shared`), a temporary screen with logout, until the ride flows exist. Logout goes through `MainViewModel.logout()`, which clears the session; the existing session-expired event then navigates back to auth.
 - `design/` holds UI reference screenshots, not code. They are dark-mode only; the light theme is derived from them.

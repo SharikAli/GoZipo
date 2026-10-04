@@ -13,8 +13,13 @@ import com.mobile.auth.presentation.register.RegisterRoot
 import com.mobile.auth.presentation.register_success.RegisterSuccessRoot
 import com.mobile.auth.presentation.reset_password.ResetPasswordRoot
 
+/**
+ * @param emailLinkBaseUrl base of this app's email links, e.g.
+ * `https://<host>/link/customer`; verify and reset-password links are matched under it.
+ */
 fun NavGraphBuilder.authGraph(
     navController: NavController,
+    emailLinkBaseUrl: String,
     onLoginSuccess: () -> Unit,
 ) {
     navigation<AuthGraphRoutes.Graph>(
@@ -80,7 +85,7 @@ fun NavGraphBuilder.authGraph(
         composable<AuthGraphRoutes.EmailVerification>(
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "https://gozipo.coding.com/api/auth/verify?token={token}"
+                    uriPattern = "$emailLinkBaseUrl/verify?token={token}"
                 },
                 navDeepLink {
                     uriPattern = "gozipo://gozipo.coding.com/api/auth/verify?token={token}"
@@ -115,7 +120,7 @@ fun NavGraphBuilder.authGraph(
         composable<AuthGraphRoutes.ResetPassword>(
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "https://gozipo.coding.com/api/auth/reset-password?token={token}"
+                    uriPattern = "$emailLinkBaseUrl/reset-password?token={token}"
                 },
                 navDeepLink {
                     uriPattern = "gozipo://gozipo.coding.com/api/auth/reset-password?token={token}"

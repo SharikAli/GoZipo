@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import com.mobile.gozipo.convention.appLinkHost
 import com.mobile.gozipo.convention.pathToPackageName
 import com.codingfeline.buildkonfig.compiler.FieldSpec
 import com.codingfeline.buildkonfig.gradle.BuildKonfigExtension
@@ -24,6 +25,9 @@ class BuildKonfigConventionPlugin: Plugin<Project> {
                             "Missing API_KEY property in local.properties"
                         )
                     buildConfigField(FieldSpec.Type.STRING, "API_KEY", apiKey)
+
+                    // Host of the email App Links (verify / reset password); also set in each app's manifest
+                    buildConfigField(FieldSpec.Type.STRING, "APP_LINK_HOST", appLinkHost())
 
                     // HTTP logging; sensitive values are masked unless HTTP_LOG_SENSITIVE_DATA=true (development only)
                     buildConfigField(

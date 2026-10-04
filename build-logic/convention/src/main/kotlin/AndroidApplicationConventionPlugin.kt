@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.mobile.gozipo.convention.appLinkHost
 import com.mobile.gozipo.convention.configureKotlinAndroid
 import com.mobile.gozipo.convention.libs
 import org.gradle.api.Plugin
@@ -20,6 +21,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     targetSdk = libs.findVersion("projectTargetSdkVersion").get().toString().toInt()
                     versionCode = libs.findVersion("projectVersionCode").get().toString().toInt()
                     versionName = libs.findVersion("projectVersionName").get().toString()
+                    // Email App Link host used by the manifest intent filters
+                    manifestPlaceholders["appLinkHost"] = appLinkHost()
                 }
                 packaging {
                     resources {

@@ -2,9 +2,7 @@ plugins {
     alias(libs.plugins.convention.android.application)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
-    // TODO: apply libs.plugins.google.services once com.mobile.gozipo.rider is
-    // added to the Firebase project and its google-services.json is in this folder.
-    // Until then FCM is unavailable and the device token is null.
+    alias(libs.plugins.google.services)
 }
 
 android {

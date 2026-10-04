@@ -1,6 +1,6 @@
 # GoZipo: Progress and Phase Plan
 
-Last updated: 2026-10-02
+Last updated: 2026-10-04
 
 Tick a box (`- [x]`) when an item is done and verified. Add new items under the phase they belong to.
 
@@ -158,10 +158,14 @@ feature/
 ### Remaining
 
 - [ ] Test on device: register and log in with the rider app; a customer account in the rider app (and the other way round) shows the wrong-app message
-- [ ] Firebase: add `com.mobile.gozipo.rider` to the Firebase project, put its `google-services.json` in `apps/rider/androidApp/`, then apply the Google Services plugin there
-- [ ] Passkeys in the rider app: add the rider package and its signing SHA-256 to the backend's `assetlinks.json`
-- [ ] Rider email links: the backend sends one verify/reset URL, which the customer app claims. Decide on role-aware links (for example a separate path or host for rider emails) and add the rider intent filters
-- [ ] Rider app icon and brand variant (it currently reuses the customer icon)
+- [x] Firebase: rider app added to the Firebase project (`google-services.json`, `GoogleService-Info.plist`); Google Services plugin applied to the rider Android app
+- [x] Backend push: removed the fixed `restrictedPackageName` (`com.mobile.gozipo`) so FCM reaches rider devices too
+- [x] Passkeys in the rider app: rider package added to the backend's `assetlinks.json`. Both apps use the same debug key, so the existing `android:apk-key-hash` origin in `application.yml` already covers the rider app (release key still to add)
+- [x] Role-aware email links as verified Android App Links (no chooser):
+  - Backend: `UserEvent` carries the role; `EmailService` sends `https://<tunnel>/link/{customer|rider}/{verify|reset-password}?token=…`; dev `email.url` follows `webauthn.rp-id`; `AppLinkController` serves browser fallback pages; rider gets `handle_all_urls` in `assetlinks.json`
+  - App: `APP_LINK_HOST` in `local.properties` feeds the manifest (`${appLinkHost}`) and `emailLinkBaseUrl(role)` for the nav deep links; each app claims only its own `/link/<role>/` paths; `gozipo://` and `localhost` links removed
+- [ ] Verify App Links on a device with the tunnel up (`adb shell pm get-app-links <package>` shows `verified`), then tap a real customer and rider email
+- [x] App icons: both apps use the `GoZipoBrandMark` look (lime background, black taxi); Android adaptive + monochrome, iOS 1024
 - [ ] Rider onboarding fields (vehicle type, vehicle details), or move this to Phase 7
 - [ ] Role in the JWT (or a server-side role check) for Phase 4 ride endpoints
 

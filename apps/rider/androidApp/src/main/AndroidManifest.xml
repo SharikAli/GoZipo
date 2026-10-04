@@ -14,10 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
-        <!--
-            No email deep links yet: the backend sends one verify/reset URL that the
-            customer app already claims. Rider links come with role-aware emails.
-        -->
         <activity
             android:exported="true"
             android:name=".MainActivity">
@@ -25,6 +21,35 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:host="localhost" android:port="8080" />
+
+                <data android:pathPrefix="/api/auth/verify" />
+                <data android:pathPrefix="/api/auth/reset-password" />
+            </intent-filter>
+
+            <!--
+                Email links as a verified App Link: the host serves assetlinks.json, so
+                Android opens this app directly (no chooser). Only this app's paths are
+                claimed; the customer app claims /link/customer/. Host comes from APP_LINK_HOST.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="${appLinkHost}" />
+
+                <data android:pathPrefix="/link/rider/verify" />
+                <data android:pathPrefix="/link/rider/reset-password" />
             </intent-filter>
         </activity>
     </application>
