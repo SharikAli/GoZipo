@@ -17,13 +17,13 @@ kotlin {
                 implementation(libs.bundles.koin.common)
 
                 implementation(libs.jetbrains.compose.components.resources)
+                implementation(libs.jetbrains.compose.material.icons.extended)
                 implementation(libs.compose.uiToolingPreview)
             }
         }
 
         androidMain {
             dependencies {
-
             }
         }
 

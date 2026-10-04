@@ -6,6 +6,7 @@ import gozipo.core.presentation.generated.resources.error_bad_request
 import gozipo.core.presentation.generated.resources.error_conflict
 import gozipo.core.presentation.generated.resources.error_disk_full
 import gozipo.core.presentation.generated.resources.error_forbidden
+import gozipo.core.presentation.generated.resources.error_gone
 import gozipo.core.presentation.generated.resources.error_no_internet
 import gozipo.core.presentation.generated.resources.error_not_found
 import gozipo.core.presentation.generated.resources.error_payload_too_large
@@ -26,6 +27,7 @@ fun DataError.toUiText(): UiText {
         DataError.Remote.FORBIDDEN -> Res.string.error_forbidden
         DataError.Remote.NOT_FOUND -> Res.string.error_not_found
         DataError.Remote.CONFLICT -> Res.string.error_conflict
+        DataError.Remote.GONE -> Res.string.error_gone
         DataError.Remote.TOO_MANY_REQUESTS -> Res.string.error_too_many_requests
         DataError.Remote.NO_INTERNET -> Res.string.error_no_internet
         DataError.Remote.PAYLOAD_TOO_LARGE -> Res.string.error_payload_too_large

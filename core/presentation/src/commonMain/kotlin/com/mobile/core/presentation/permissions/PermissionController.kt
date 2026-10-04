@@ -4,6 +4,7 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.RequestCanceledException
+import dev.icerock.moko.permissions.location.LOCATION
 import dev.icerock.moko.permissions.notifications.REMOTE_NOTIFICATION
 
 class PermissionController(
@@ -23,8 +24,9 @@ class PermissionController(
     }
 }
 
-fun Permission.toMokoPermission(): dev.icerock.moko.permissions.Permission {
+private fun Permission.toMokoPermission(): dev.icerock.moko.permissions.Permission {
     return when (this) {
         Permission.NOTIFICATIONS -> dev.icerock.moko.permissions.Permission.REMOTE_NOTIFICATION
+        Permission.LOCATION -> dev.icerock.moko.permissions.Permission.LOCATION
     }
 }

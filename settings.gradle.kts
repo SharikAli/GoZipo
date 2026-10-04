@@ -33,8 +33,11 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include(":androidApp")
-include(":shared")
+include(":apps:common")
+include(":apps:customer:androidApp")
+include(":apps:customer:shared")
+include(":apps:rider:androidApp")
+include(":apps:rider:shared")
 include(":core:data")
 include(":core:presentation")
 include(":core:domain")

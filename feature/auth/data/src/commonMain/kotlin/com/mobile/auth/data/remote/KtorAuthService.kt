@@ -12,17 +12,18 @@ import com.mobile.core.data.mappers.toAuthInfo
 import com.mobile.core.data.network.get
 import com.mobile.core.data.network.post
 import com.mobile.core.domain.auth.AuthInfo
+import com.mobile.core.domain.auth.UserRole
 import com.mobile.core.domain.util.DataError
 import com.mobile.core.domain.util.EmptyResult
 import com.mobile.core.domain.util.Result
 import com.mobile.core.domain.util.map
-import com.mobile.core.domain.util.onSuccess
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.authProvider
 import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 
 class KtorAuthService(
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
+    private val appRole: UserRole
 ) : AuthService {
 
     override suspend fun login(
@@ -33,7 +34,8 @@ class KtorAuthService(
             route = "/auth/login",
             body = LoginRequest(
                 email = email,
-                password = password
+                password = password,
+                role = appRole
             )
         ).map { authInfoSerializable ->
             authInfoSerializable.toAuthInfo()
@@ -50,7 +52,8 @@ class KtorAuthService(
             body = RegisterRequest(
                 email = email,
                 username = username,
-                password = password
+                password = password,
+                role = appRole
             )
         )
     }
@@ -106,7 +109,8 @@ class KtorAuthService(
         return httpClient.post<RefreshRequest, Unit>(
             route = "/auth/logout",
             body = RefreshRequest(refreshToken)
-        ).onSuccess {
+        ).also {
+            // Drop cached tokens even if the request failed: the session is cleared locally anyway
             httpClient.authProvider<BearerAuthProvider>()?.clearToken()
         }
     }

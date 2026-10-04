@@ -66,6 +66,7 @@ class ResetPasswordViewModel(
     fun onAction(action: ResetPasswordAction) {
         when (action) {
             ResetPasswordAction.OnSubmitClick -> resetPassword()
+            ResetPasswordAction.OnLoginClick -> Unit
             ResetPasswordAction.OnTogglePasswordVisibilityClick -> {
                 _state.update {
                     it.copy(

@@ -1,5 +1,6 @@
 [versions]
 projectApplicationId = "com.mobile.gozipo"
+projectRiderApplicationId = "com.mobile.gozipo.rider"
 projectVersionName = "1.0"
 projectVersionCode = "1"
 projectMinSdkVersion = "27"
@@ -54,6 +55,7 @@ androidx-lifecycle = "2.11.0"
 androidx-runner = "1.6.2"
 androidx-test-core = "1.7.0"
 androidx-appcompat = "1.8.0"
+androidx-credentials = "1.6.0"
 core-splashscreen = "1.2.0"
 androidx-espresso = "3.7.0"
 junit = "4.13.2"
@@ -72,6 +74,8 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "androidx-credentials" }
+androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "androidx-credentials" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
 koin-core-viewmodel = { group = "io.insert-koin", name = "koin-core-viewmodel", version.ref = "koin" }
 core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "core-splashscreen" }
@@ -168,6 +172,7 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 moko-permissions-notifications = { module = "dev.icerock.moko:permissions-notifications", version.ref = "moko" }
+moko-permissions-location = { module = "dev.icerock.moko:permissions-location", version.ref = "moko" }
 
 # Logging
 touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }

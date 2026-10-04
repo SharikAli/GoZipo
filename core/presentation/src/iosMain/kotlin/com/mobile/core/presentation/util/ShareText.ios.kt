@@ -1,7 +1,6 @@
 package com.mobile.core.presentation.util
 
 import androidx.compose.runtime.Composable
-import com.oklahoma.sonnershelpingsonners.appViewController
 import platform.UIKit.UIActivityViewController
 
 @Composable

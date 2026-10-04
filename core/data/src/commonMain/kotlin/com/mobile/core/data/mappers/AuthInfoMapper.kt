@@ -18,7 +18,8 @@ fun UserSerializable.toUser(): User {
         id = id,
         email = email,
         username = username,
-        hasVerifiedEmail = hasVerifiedEmail
+        hasVerifiedEmail = hasVerifiedEmail,
+        role = role
     )
 }
 
@@ -27,7 +28,8 @@ fun User.toSerializable(): UserSerializable {
         id = id,
         email = email,
         username = username,
-        hasVerifiedEmail = hasVerifiedEmail
+        hasVerifiedEmail = hasVerifiedEmail,
+        role = role
     )
 }
 
