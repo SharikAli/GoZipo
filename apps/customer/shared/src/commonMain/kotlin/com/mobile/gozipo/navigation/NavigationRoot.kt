@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import com.mobile.apps.common.navigation.emailLinkBaseUrl
 import com.mobile.auth.presentation.navigation.AuthGraphRoutes
 import com.mobile.auth.presentation.navigation.authGraph
-import com.mobile.gozipo.home.HomePlaceholderScreen
+import com.mobile.apps.common.home.HomeMapRoot
 import com.mobile.core.domain.auth.UserRole
 import kotlinx.serialization.Serializable
 
@@ -37,7 +37,7 @@ fun NavigationRoot(
             }
         )
         composable<HomeRoute> {
-            HomePlaceholderScreen(onLogoutClick = onLogoutClick)
+            HomeMapRoot(onLogoutClick = onLogoutClick)
         }
     }
 }

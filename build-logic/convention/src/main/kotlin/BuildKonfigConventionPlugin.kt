@@ -29,6 +29,14 @@ class BuildKonfigConventionPlugin: Plugin<Project> {
                     // Host of the email App Links (verify / reset password); also set in each app's manifest
                     buildConfigField(FieldSpec.Type.STRING, "APP_LINK_HOST", appLinkHost())
 
+                    // Mapbox public token (pk.…) for maps, search and directions. Optional so the
+                    // project builds without it; maps stay blank and Mapbox calls fail until it's set.
+                    buildConfigField(
+                        FieldSpec.Type.STRING,
+                        "MAPBOX_ACCESS_TOKEN",
+                        localProperties.getProperty("MAPBOX_ACCESS_TOKEN") ?: ""
+                    )
+
                     // HTTP logging; sensitive values are masked unless HTTP_LOG_SENSITIVE_DATA=true (development only)
                     buildConfigField(
                         FieldSpec.Type.BOOLEAN,
@@ -38,7 +46,7 @@ class BuildKonfigConventionPlugin: Plugin<Project> {
                     buildConfigField(
                         FieldSpec.Type.BOOLEAN,
                         "HTTP_LOG_SENSITIVE_DATA",
-                        localProperties.getProperty("HTTP_LOG_SENSITIVE_DATA") ?: "true"
+                        localProperties.getProperty("HTTP_LOG_SENSITIVE_DATA") ?: "false"
                     )
                 }
             }

@@ -1,6 +1,6 @@
 # GoZipo: Progress and Phase Plan
 
-Last updated: 2026-10-04
+Last updated: 2026-10-06
 
 Tick a box (`- [x]`) when an item is done and verified. Add new items under the phase they belong to.
 
@@ -11,9 +11,9 @@ Tick a box (`- [x]`) when an item is done and verified. Add new items under the 
 | 0 | Project foundation | Done |
 | 1 | Design system | Done |
 | 2 | Customer auth UI + Android passkeys | Done |
-| 3 | Multi-app setup + Rider app shell | In progress |
-| 4 | Backend ride domain + realtime | Not started |
-| 5 | Location + Mapbox | Not started |
+| 3 | Multi-app setup + Rider app shell | Done |
+| 4 | Backend ride domain + realtime | Done except FCM device check |
+| 5 | Location + Mapbox | Android done; iOS map and location deferred |
 | 6 | Customer ride flow | Not started |
 | 7 | Rider ride flow | Not started |
 | 8 | Hardening | Not started |
@@ -40,8 +40,8 @@ GoZipo is a ride-hailing system built to learn Mapbox, with no Google Maps.
 
 - Riders may counter-offer the customer's fare. The fare step is PKR 10.
 - Realtime uses a plain WebSocket with JSON messages (no STOMP), with FCM as the fallback. Reuse the Chirp implementation:
-  - App: `~/development/Chirp/composeMultiplatform/`
-  - Backend: `~/development/Chirp/springboot/chirp`
+  - App: `~/Development/Chirp/ComposeMultiplatform/`
+  - Backend: `~/Development/Chirp/Spring boot/chirp`
 - An account is either CUSTOMER or RIDER, never both.
 - The passkey RP domain stays on the current Cloudflare tunnel for now.
 - Mapbox uses the public token only for now. The secret token and iOS Mapbox work are deferred.
@@ -115,7 +115,7 @@ GoZipo is a ride-hailing system built to learn Mapbox, with no Google Maps.
 
 ---
 
-## Phase 3: Multi-app setup + Rider app shell
+## Phase 3: Multi-app setup + Rider app shell (done)
 
 Goal: one repo produces two apps, GoZipo and GoZipo Rider, that share core modules and auth.
 
@@ -166,33 +166,91 @@ feature/
   - App: `APP_LINK_HOST` in `local.properties` feeds the manifest (`${appLinkHost}`) and `emailLinkBaseUrl(role)` for the nav deep links; each app claims only its own `/link/<role>/` paths; `gozipo://` and `localhost` links removed
 - [ ] Verify App Links on a device with the tunnel up (`adb shell pm get-app-links <package>` shows `verified`), then tap a real customer and rider email
 - [x] App icons: both apps use the `GoZipoBrandMark` look (lime background, black taxi); Android adaptive + monochrome, iOS 1024
-- [ ] Rider onboarding fields (vehicle type, vehicle details), or move this to Phase 7
-- [ ] Role in the JWT (or a server-side role check) for Phase 4 ride endpoints
+- Moved out: rider vehicle profile (backend → Phase 4, onboarding screen → Phase 7); role check → Phase 4
 
 ## Phase 4: Backend ride domain + realtime
 
 Goal: the backend owns ride state and pushes changes to both apps in real time.
 
-- [ ] Ride domain model: ride, pickup and drop-off stops, vehicle type, offered fare, status
-- [ ] Ride state machine on the server (requested, offers, accepted, rider arriving, in progress, completed, cancelled); invalid transitions rejected
-- [ ] Bidding: customer offer, rider accept or counter-offer in PKR 10 steps, customer accepts one offer
-- [ ] Ownership checks: only the ride's customer and assigned rider can read or change it
-- [ ] REST endpoints for create ride, offers, accept, cancel, status updates, ride history
-- [ ] WebSocket endpoint with JSON messages, reusing the Chirp backend implementation
-- [ ] FCM fallback when the WebSocket is not connected
-- [ ] App side: realtime client in `core/data` reusing the Chirp app implementation (connect, reconnect, auth)
-- [ ] Tests for state transitions and ownership rules
+### Foundations
+
+- [x] Flyway owns the schema (`app/src/main/resources/db/migration`): `V1__baseline` (pre-Phase 4 tables, only runs on an empty database), `V2__rides`. Existing databases are baselined at version 1 automatically. Dev and prod use `ddl-auto: validate`
+- [x] Role claim in the access token; `JwtAuthFilter` grants `ROLE_CUSTOMER` / `ROLE_RIDER`; ride endpoints use `@PreAuthorize`. Tokens issued before this have no role and get 403 on ride endpoints until refreshed
+- [x] Rider vehicle profile (`rider_profiles`): set with `PUT /api/riders/me/vehicle` (the Phase 7 screen will call the same endpoint); riders without one can't go online or offer
+
+### Rides
+
+Backend module `ride` (`~/Development/Projects/ride-hailing/ride`). Rules: [vehicle types, fares and rounds](#ride-rules).
+
+- [x] Ride domain model: ride, pickup and drop-off stops, vehicle type, recommended/offered/agreed fare, status, cash payment
+- [x] Server state machine: `SEARCHING → ACCEPTED → ARRIVED → IN_PROGRESS → COMPLETED`, `CANCELLED` until the trip starts; invalid transitions return 409 `INVALID_RIDE_STATE`
+- [x] Bidding: customer offer (70%–300% of recommended), rider accepts the fare or counters in PKR 10 steps up to 150%, customer accepts one offer; server-side auto-accept
+- [x] 60 s search rounds: when a round ends the customer gets `SEARCH_ROUND_ENDED`, raises the fare (new round) or cancels; searches left for 15 min are cancelled by the system
+- [x] Ownership checks: only the ride's customer and assigned rider can read or change it (others get 404); one active ride per customer and per rider, enforced by partial unique indexes
+- [x] Rider availability: online/offline and live location in Redis GEO (presence expires after 2 min without an update); requests go to online riders of the same vehicle type within 5 km
+- [x] REST endpoints (below) and WebSocket `/ws/rides` (Chirp envelope `{type, payload}`, token in the handshake `Authorization` header, ping/pong)
+- [x] FCM fallback: ride messages with push text go out as `RideEvent.PushRequested` (RabbitMQ) when the user has no open WebSocket; `NotificationRideEventListener` sends them
+- [x] Tests: unit tests for fare rules, state transitions and the ride entity (`./gradlew :ride:test`, 19 tests); end-to-end check of the whole flow, ownership and roles against a local backend (49 checks)
+- [ ] FCM fallback verified end to end with RabbitMQ and a real device
+- [x] App side: realtime client in `core/data` adapted from the Chirp app: `RealtimeClient` (core/domain) / `KtorRealtimeClient`. One shared socket while collected, signed in, in the foreground and online; backoff reconnect (2 s → 30 s, reset after each connection); the expired-token handshake refreshes the session through the shared, mutex-guarded `refreshSession` (also used by the REST client). Verified live on the iOS simulator against a local backend with 1-minute tokens: connect, `RIDE_REQUESTED`, outgoing `LOCATION_UPDATE`, network drop, background/foreground, token expiry, sign-out
+- [x] Keep-alive: the app pings every 20 s. Android sets it on the OkHttp engine (`pingInterval`, since OkHttp ignores the WebSockets plugin's `pingIntervalMillis`); iOS uses the plugin setting. The server pings every 30 s and drops sockets with no pong for 60 s; Tomcat answers the app's pings itself
+- [x] Token refresh race: `refreshSession` takes the access token the caller saw rejected and returns the stored session without a network call when another caller already refreshed it. Without this, a REST 401 and a socket 1008 on the same expired token would send the rotated refresh token twice and the second failure would sign the user out
+- [x] HTTP logging masks sensitive data by default (`HTTP_LOG_SENSITIVE_DATA` defaults to `false`)
+- [ ] Check on a live Android socket that OkHttp sends the 20 s pings (server log or packet capture)
+
+#### Ride rules
+
+| | |
+| --- | --- |
+| Vehicle types | `MOTO`, `RICKSHAW`, `MINI`, `RIDE_AC`, `PREMIUM` |
+| Recommended fare | `max(minimum, base + perKm·km + perMinute·min)`, rounded to PKR 10; per-type rates in `application.yml` (`ride-hailing.ride.fares`) |
+| Route | Mapbox Directions `driving-traffic` (`MapboxRouteEstimator`, env `MAPBOX_ACCESS_TOKEN`, 3 s budget); without a token or on any Mapbox failure, straight line × 1.3 at 25 km/h (`StraightLineRouteEstimator`) |
+| Customer offer | PKR 10 steps, ≥ 70% of recommended (and the type's minimum), ≤ 300% |
+| Rider counter | PKR 10 steps, above the customer's offer, ≤ 150% of it |
+| Search round | 60 s; raising the fare starts a new round and expires older offers |
+
+#### Ride API
+
+All under `/api`, bearer token required.
+
+| Method and path | Role | Purpose |
+| --- | --- | --- |
+| `POST /rides/estimate` | Customer | Recommended fare and allowed range per vehicle type |
+| `POST /rides` | Customer | Request a ride (fare, vehicle type, stops, auto-accept) |
+| `POST /rides/{id}/fare` | Customer | Raise the fare / search again |
+| `GET /rides/{id}/offers` | Customer | Pending offers in the current round |
+| `POST /rides/{id}/offers/{offerId}/accept` · `/decline` | Customer | Pick or reject an offer |
+| `GET /rides/open` | Rider | Open requests nearby for the rider's vehicle |
+| `POST /rides/{id}/offers` | Rider | Accept the fare (`{}`) or counter (`{"amount": …}`) |
+| `DELETE /rides/{id}/offers/{offerId}` | Rider | Withdraw an offer |
+| `POST /rides/{id}/arrived` · `/start` · `/complete` | Rider | Trip steps |
+| `POST /rides/{id}/cancel` | Both | Cancel (customer until the trip starts; rider once assigned) |
+| `GET /rides/active` · `/rides/history?page=` · `/rides/{id}` | Both | Resync and history |
+| `GET /riders/me/status` · `PUT /riders/me/vehicle` | Rider | Vehicle profile |
+| `POST /riders/me/online` · `/offline` · `PUT /riders/me/location` | Rider | Availability (location normally over the WebSocket) |
+
+WebSocket messages: in `LOCATION_UPDATE` (rider); out `RIDE_REQUESTED`, `RIDE_UNAVAILABLE`, `OFFER_RECEIVED`, `OFFER_UPDATED`, `RIDE_UPDATED`, `SEARCH_ROUND_ENDED`, `RIDER_LOCATION`, `ERROR`.
 
 ## Phase 5: Location + Mapbox
 
-Goal: maps and location behind abstractions so features never touch Mapbox directly.
+Goal: maps and location behind abstractions so features never touch Mapbox directly. Swapping to another provider (e.g. Google Maps) means a new `:core:map:<provider>` module implementing the same three interfaces, and changing one Koin module in each app's `initKoin`.
 
-- [ ] Location abstraction in domain (current location, location updates, permission state)
-- [ ] Android location implementation; iOS later
-- [ ] Map abstraction: camera, markers (using the existing marker visuals), route line
-- [ ] Mapbox Android implementation with the public token (token kept out of source control)
-- [ ] Geocoding / place search and routing (distance, duration) through Mapbox APIs
-- [ ] iOS Mapbox (deferred; needs the secret token)
+| Layer | Where | What |
+| --- | --- | --- |
+| Domain | `core/domain`: `location/`, `place/`, `route/` | `GeoPoint`, `LocationProvider`, `PlaceSearchService`, `RouteService` (no map SDK types) |
+| Map UI contract | `:core:map:api` | `GoZipoMap`, `MapCameraState` (position, `isMoving`, `moveTo`, `fitBounds`), `MapMarker` (Compose content), `MapPolyline`, `MapProvider` |
+| Mapbox | `:core:map:mapbox` (`mapboxModule`) | `MapboxMapProvider` (Android), `MapboxPlaceSearchService` (Search Box API), `MapboxRouteService` (Directions API); its own HTTP client, so our API key and bearer token never go to Mapbox |
+| Device location | `core/data` | `FusedLocationProvider` (Android, Play services location); iOS stub |
+
+- [x] Location abstraction in domain (availability/permission state, current location, location updates)
+- [x] Android location implementation (`FusedLocationProvider`); iOS returns `UNSUPPORTED` for now
+- [x] Map abstraction: camera, markers (the existing marker visuals as view annotations), route line; light/dark style follows the theme
+- [x] Mapbox Android implementation (Maps SDK 11.32, `ndk27` artifacts, public Maven repo, no secret token). Token: `MAPBOX_ACCESS_TOKEN` in `local.properties`, optional; without it the map shows a placeholder instead of crashing
+- [x] Place search, reverse geocoding and routing through Mapbox APIs, unit-tested against recorded responses (`./gradlew :core:map:mapbox:iosSimulatorArm64Test`)
+- [x] Backend fares use Mapbox road distance and time, with the straight-line fallback (`MapboxRouteEstimatorTest`)
+- [x] Temporary home of both apps (`HomeMapRoot` in `apps/common`): pickup pin + reverse geocode, tap for destination + route, recenter on location
+- [ ] Device check with a real token: map tiles, puck, pin, search/route (smoke-tested on an emulator without a token only)
+- [ ] iOS Mapbox map (deferred; needs the secret token and a Swift bridge) and iOS Core Location
 
 ## Phase 6: Customer ride flow
 
@@ -212,6 +270,7 @@ Goal: a customer can book and complete a ride. Depends on Phases 4 and 5.
 
 Goal: a rider can receive, bid on and complete rides. Depends on Phases 3, 4 and 5.
 
+- [ ] Onboarding screen for the vehicle profile, required before going online
 - [ ] Go online / offline
 - [ ] Share location while online
 - [ ] Receive nearby ride requests in real time

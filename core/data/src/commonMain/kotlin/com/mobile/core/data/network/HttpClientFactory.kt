@@ -1,13 +1,8 @@
 package com.mobile.core.data.network
 
 import com.mobile.core.data.BuildKonfig
-import com.mobile.core.data.dto.AuthInfoSerializable
-import com.mobile.core.data.dto.requests.RefreshRequest
-import com.mobile.core.data.mappers.toAuthInfo
 import com.mobile.core.domain.auth.SessionStorage
 import com.mobile.core.domain.logging.GoZipoLogger
-import com.mobile.core.domain.util.onFailure
-import com.mobile.core.domain.util.onSuccess
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
@@ -66,6 +61,8 @@ class HttpClientFactory(
                 }
             }
             install(WebSockets) {
+                // Used by the Darwin engine (pings, and closes the socket after 2x without a pong).
+                // OkHttp ignores it; Android's ping interval is set on the engine instead.
                 pingIntervalMillis = 20_000L
             }
             defaultRequest {
@@ -91,32 +88,16 @@ class HttpClientFactory(
                             return@refreshTokens null
                         }
 
-                        val authInfo = sessionStorage.observeAuthInfo().firstOrNull()
-                        if (authInfo?.refreshToken.isNullOrBlank()) {
-                            sessionStorage.set(null)
-                            return@refreshTokens null
-                        }
-
-                        var bearerTokens: BearerTokens? = null
-                        client.post<RefreshRequest, AuthInfoSerializable>(
-                            route = "/auth/refresh",
-                            body = RefreshRequest(
-                                refreshToken = authInfo.refreshToken
-                            ),
-                            builder = {
-                                markAsRefreshTokenRequest()
-                            }
-                        ).onSuccess { newAuthInfo ->
-                            sessionStorage.set(newAuthInfo.toAuthInfo())
-                            bearerTokens = BearerTokens(
-                                accessToken = newAuthInfo.accessToken,
-                                refreshToken = newAuthInfo.refreshToken
+                        client.refreshSession(
+                            sessionStorage = sessionStorage,
+                            staleAccessToken = oldTokens?.accessToken,
+                            builder = { markAsRefreshTokenRequest() }
+                        )?.let {
+                            BearerTokens(
+                                accessToken = it.accessToken,
+                                refreshToken = it.refreshToken
                             )
-                        }.onFailure { _ ->
-                            sessionStorage.set(null)
                         }
-
-                        bearerTokens
                     }
                 }
             }

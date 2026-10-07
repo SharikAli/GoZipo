@@ -30,6 +30,8 @@ kotlin {
             implementation(projects.core.domain)
             implementation(projects.core.designsystem)
             implementation(projects.core.presentation)
+            implementation(projects.core.map.api)
+            implementation(projects.core.map.mapbox)
 
             implementation(projects.feature.auth.data)
             implementation(projects.feature.auth.domain)

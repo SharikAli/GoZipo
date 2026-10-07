@@ -10,11 +10,18 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.core.domain)
                 implementation(projects.core.data)
+                implementation(projects.core.domain)
+                implementation(projects.core.designsystem)
+                implementation(projects.core.presentation)
+                implementation(projects.core.map.api)
+
                 implementation(projects.feature.auth.domain)
 
+                implementation(libs.jetbrains.compose.material.icons.extended)
+
                 implementation(libs.bundles.koin.common)
+                implementation(libs.compose.uiToolingPreview)
             }
         }
     }

@@ -37,6 +37,8 @@ coil-network = "3.5.0"
 moko = "0.20.1"
 buildkonfig = "0.21.2"
 kermit = "2.0.6"
+mapbox = "11.32.0"
+play-services-location = "21.4.0"
 
 # Compose
 compose-hot-reload = "1.2.0"
@@ -125,6 +127,7 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 
 # Kotlinx
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
@@ -138,6 +141,7 @@ koin-androidx-navigation = { group = "io.insert-koin", name = "koin-androidx-nav
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
@@ -173,6 +177,11 @@ moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "mok
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 moko-permissions-notifications = { module = "dev.icerock.moko:permissions-notifications", version.ref = "moko" }
 moko-permissions-location = { module = "dev.icerock.moko:permissions-location", version.ref = "moko" }
+
+# Maps and location
+mapbox-maps = { module = "com.mapbox.maps:android-ndk27", version.ref = "mapbox" }
+mapbox-maps-compose = { module = "com.mapbox.extension:maps-compose-ndk27", version.ref = "mapbox" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 
 # Logging
 touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
