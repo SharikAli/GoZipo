@@ -15,8 +15,8 @@ import com.mobile.core.map.api.MapProvider
 import com.mobile.core.map.api.MapSettings
 
 /**
- * Stands in for the map where Mapbox can't run: on iOS until the Mapbox iOS SDK is bridged,
- * and on Android when MAPBOX_ACCESS_TOKEN is missing (the SDK would throw).
+ * Stands in for the map where Mapbox can't run: when MAPBOX_ACCESS_TOKEN is missing (the SDK
+ * would throw), or on iOS when the app didn't register the Swift bridge.
  */
 class PlaceholderMapProvider(private val message: String) : MapProvider {
     @Composable

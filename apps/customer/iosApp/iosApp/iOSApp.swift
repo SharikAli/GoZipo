@@ -5,7 +5,7 @@ import CustomerShared
 struct iOSApp: App {
     
     init() {
-        InitKoinKt.doInitKoin()
+        IosInitKoinKt.doInitKoin(mapboxFactory: GoZipoMapboxBridgeFactory())
     }
     
     var body: some Scene {

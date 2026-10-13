@@ -7,11 +7,11 @@ import androidx.navigation.compose.composable
 import com.mobile.apps.common.navigation.emailLinkBaseUrl
 import com.mobile.auth.presentation.navigation.AuthGraphRoutes
 import com.mobile.auth.presentation.navigation.authGraph
-import com.mobile.apps.common.home.HomeMapRoot
+import com.mobile.booking.presentation.booking.BookingRoot
 import com.mobile.core.domain.auth.UserRole
 import kotlinx.serialization.Serializable
 
-/** Temporary logged-in destination until the customer map flow exists. */
+/** Logged-in home: the map where the customer books and follows a ride. */
 @Serializable
 data object HomeRoute
 
@@ -37,7 +37,7 @@ fun NavigationRoot(
             }
         )
         composable<HomeRoute> {
-            HomeMapRoot(onLogoutClick = onLogoutClick)
+            BookingRoot(onLogoutClick = onLogoutClick)
         }
     }
 }

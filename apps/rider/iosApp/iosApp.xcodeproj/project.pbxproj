@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A1C0FFEE0000000000000014 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000013 /* MapboxMaps */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		63787543C21A13D9AE77FE86 /* GoZipoRider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoZipoRider.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -34,6 +38,12 @@
 			path = iosApp;
 			sourceTree = "<group>";
 		};
+		A1C0FFEE0000000000000011 /* Mapbox */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = Mapbox;
+			path = "../../ios-common/Mapbox";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1C0FFEE0000000000000014 /* MapboxMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +63,7 @@
 			children = (
 				42C9A272373E59EFE514B873 /* Configuration */,
 				DD237F420F561247FD29DF19 /* iosApp */,
+				A1C0FFEE0000000000000011 /* Mapbox */,
 				FFF00BA770278723A8DD1816 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,9 +94,11 @@
 			);
 			fileSystemSynchronizedGroups = (
 				DD237F420F561247FD29DF19 /* iosApp */,
+				A1C0FFEE0000000000000011 /* Mapbox */,
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				A1C0FFEE0000000000000013 /* MapboxMaps */,
 			);
 			productName = iosApp;
 			productReference = 63787543C21A13D9AE77FE86 /* GoZipoRider.app */;
@@ -114,6 +128,9 @@
 			);
 			mainGroup = 9FDD264B38251573FE19E512;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FFF00BA770278723A8DD1816 /* Products */;
 			projectDirPath = "";
@@ -374,6 +391,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 11.26.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1C0FFEE0000000000000013 /* MapboxMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1B4355B242863DE3EFACCA75 /* Project object */;
 }

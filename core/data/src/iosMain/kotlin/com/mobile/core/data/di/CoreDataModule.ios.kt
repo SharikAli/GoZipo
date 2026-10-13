@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.mobile.core.data.auth.createDataStore
 import com.mobile.core.data.notification.FirebasePushNotificationService
-import com.mobile.core.data.location.UnsupportedLocationProvider
+import com.mobile.core.data.location.CoreLocationProvider
 import com.mobile.core.domain.location.LocationProvider
 import com.mobile.core.data.realtime.AppLifecycleObserver
 import com.mobile.core.data.realtime.ConnectionErrorHandler
@@ -25,6 +25,5 @@ actual val platformCoreDataModule = module {
     singleOf(::ConnectivityObserver)
     singleOf(::AppLifecycleObserver)
     singleOf(::ConnectionErrorHandler)
-
-    single<LocationProvider> { UnsupportedLocationProvider() }
+    singleOf(::CoreLocationProvider) bind LocationProvider::class
 }

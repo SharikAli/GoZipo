@@ -12,6 +12,6 @@ enum class LocationError : Error {
     /** No fix could be obtained right now. */
     UNAVAILABLE,
 
-    /** This platform has no implementation yet (iOS for now). */
+    /** This platform has no location implementation. */
     UNSUPPORTED
 }
