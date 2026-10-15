@@ -5,7 +5,10 @@ import RiderShared
 struct iOSApp: App {
     
     init() {
-        IosInitKoinKt.doInitKoin(mapboxFactory: GoZipoMapboxBridgeFactory())
+        IosInitKoinKt.doInitKoin(
+            mapboxFactory: GoZipoMapboxBridgeFactory(),
+            navigationFactory: GoZipoNavigationBridgeFactory()
+        )
     }
     
     var body: some Scene {

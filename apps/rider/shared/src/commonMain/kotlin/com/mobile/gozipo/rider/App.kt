@@ -13,7 +13,7 @@ import com.mobile.apps.common.navigation.DeepLinkListener
 import com.mobile.auth.presentation.navigation.AuthGraphRoutes
 import com.mobile.core.designsystem.theme.GoZipoTheme
 import com.mobile.core.presentation.util.ObserveAsEvents
-import com.mobile.gozipo.rider.navigation.HomeRoute
+import com.mobile.driving.presentation.routes.HomeRoute
 import com.mobile.gozipo.rider.navigation.NavigationRoot
 import org.koin.compose.viewmodel.koinViewModel
 

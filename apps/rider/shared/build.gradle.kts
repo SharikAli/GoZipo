@@ -7,11 +7,12 @@ plugins {
 
 kotlin {
 
-    // Swift implements the Mapbox bridge protocols, so they must be in the framework header
-    // under their plain names (GoZipoMapboxFactory, ...)
+    // Swift implements the Mapbox map and navigation bridge protocols, so they must be in the
+    // framework header under their plain names (GoZipoMapboxFactory, GoZipoNavigationFactory, ...)
     targets.withType<KotlinNativeTarget>().configureEach {
         binaries.withType<Framework>().configureEach {
             export(projects.core.map.mapbox)
+            export(projects.core.map.navigation)
         }
     }
 
@@ -43,10 +44,14 @@ kotlin {
             implementation(projects.core.presentation)
             implementation(projects.core.map.api)
             api(projects.core.map.mapbox)
+            api(projects.core.map.navigation)
 
             implementation(projects.feature.auth.data)
             implementation(projects.feature.auth.domain)
             implementation(projects.feature.auth.presentation)
+            implementation(projects.feature.ride.data)
+            implementation(projects.feature.ride.domain)
+            implementation(projects.feature.driving.presentation)
 
             implementation(libs.jetbrains.compose.runtime)
             implementation(libs.jetbrains.compose.ui)

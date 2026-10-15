@@ -27,6 +27,27 @@ interface RideService {
 
     suspend fun declineOffer(rideId: String, offerId: String): EmptyResult<DataError.Remote>
 
+    /** Rider: open requests nearby for the rider's vehicle. Fails with CONFLICT while offline. */
+    suspend fun getOpenRides(): Result<List<OpenRide>, DataError.Remote>
+
+    /**
+     * Rider: take the customer's fare ([amount] null) or counter-offer. With auto-accept on,
+     * taking the fare assigns the rider at once (the returned offer is ACCEPTED).
+     */
+    suspend fun submitOffer(
+        rideId: String,
+        amount: Int? = null
+    ): Result<RideOffer, DataError.Remote>
+
+    suspend fun withdrawOffer(rideId: String, offerId: String): EmptyResult<DataError.Remote>
+
+    /** Rider: trip steps. The backend rejects steps out of order with CONFLICT. */
+    suspend fun markArrived(rideId: String): Result<Ride, DataError.Remote>
+
+    suspend fun startTrip(rideId: String): Result<Ride, DataError.Remote>
+
+    suspend fun completeTrip(rideId: String): Result<Ride, DataError.Remote>
+
     /** Customer until the trip starts, rider once assigned. */
     suspend fun cancelRide(rideId: String, reason: String? = null): Result<Ride, DataError.Remote>
 

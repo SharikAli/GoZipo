@@ -37,6 +37,13 @@ class BuildKonfigConventionPlugin: Plugin<Project> {
                         localProperties.getProperty("MAPBOX_ACCESS_TOKEN") ?: ""
                     )
 
+                    // Turn-by-turn navigation drives a simulated location along the route (desk testing only)
+                    buildConfigField(
+                        FieldSpec.Type.BOOLEAN,
+                        "MAPBOX_SIMULATE_NAVIGATION",
+                        localProperties.getProperty("MAPBOX_SIMULATE_NAVIGATION") ?: "false"
+                    )
+
                     // HTTP logging; sensitive values are masked unless HTTP_LOG_SENSITIVE_DATA=true (development only)
                     buildConfigField(
                         FieldSpec.Type.BOOLEAN,

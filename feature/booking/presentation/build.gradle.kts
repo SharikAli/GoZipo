@@ -11,6 +11,7 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
 
                 implementation(projects.feature.ride.domain)
+                implementation(projects.feature.ride.presentation)
                 implementation(projects.core.domain)
                 implementation(projects.core.designsystem)
                 implementation(projects.core.presentation)

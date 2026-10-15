@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fare_amount">PKR%1$s</string>
+    <string name="distance_meters">%1$s m</string>
+    <string name="distance_kilometers">%1$s km</string>
+    <string name="trip_minutes">%1$s min</string>
+
+    <string name="vehicle_moto">Moto</string>
+    <string name="vehicle_moto_description">No traffic, lower prices</string>
+    <string name="vehicle_rickshaw">Rickshaw</string>
+    <string name="vehicle_rickshaw_description">Lower fares</string>
+    <string name="vehicle_mini">Mini</string>
+    <string name="vehicle_mini_description">Lower fares, no AC</string>
+    <string name="vehicle_ride_ac">Ride A/C</string>
+    <string name="vehicle_ride_ac_description">Cars with AC</string>
+    <string name="vehicle_premium">Premium</string>
+    <string name="vehicle_premium_description">Sedans with AC</string>
+</resources>

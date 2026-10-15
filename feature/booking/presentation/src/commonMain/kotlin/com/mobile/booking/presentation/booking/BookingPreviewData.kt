@@ -126,6 +126,10 @@ internal object BookingPreviewData {
         )
     )
 
+    val destinationOnMap = chooseStops.copy(
+        destinationPin = DestinationPin(point = dropoffPoint, address = "Aisha Manzil mosque, Block 7, Gulberg")
+    )
+
     val placeSearchEmpty = chooseStops.copy(
         search = PlaceSearch(target = SearchTarget.PICKUP, query = TextFieldState("zzqx"))
     )

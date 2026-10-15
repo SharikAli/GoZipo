@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mobile.booking.presentation.components.ChooseDestinationOnMapSheet
 import com.mobile.booking.presentation.components.ChooseStopsSheet
 import com.mobile.booking.presentation.components.ChooseVehicleSheet
 import com.mobile.booking.presentation.components.FinishedSheet
@@ -126,7 +127,7 @@ fun BookingRoot(
     ) {
         if (ride == null) return@LaunchedEffect
         val points = when (ride.status) {
-            RideStatus.SEARCHING -> null
+            RideStatus.SEARCHING -> state.route?.points ?: listOf(ride.pickup.point, ride.dropoff.point)
             RideStatus.ACCEPTED, RideStatus.ARRIVED -> listOfNotNull(
                 state.riderLocation,
                 ride.pickup.point
@@ -135,7 +136,6 @@ fun BookingRoot(
             else -> listOfNotNull(state.riderLocation, ride.dropoff.point)
         }
         when {
-            points == null -> Unit
             points.size > 1 -> cameraState.fitBounds(points)
             points.size == 1 -> cameraState.moveTo(MapCameraPosition(target = points.first()))
         }
@@ -178,8 +178,10 @@ fun BookingScreen(
                     contentPadding = PaddingValues(top = topInset, bottom = peekHeight),
                     onAction = onAction
                 )
-                if (stage == BookingStage.CHOOSE_STOPS) {
-                    CenterPin(bottomInset = peekHeight)
+                when (stage) {
+                    BookingStage.CHOOSE_STOPS -> CenterPin(bottomInset = peekHeight, destination = false)
+                    BookingStage.CHOOSE_DESTINATION_ON_MAP -> CenterPin(bottomInset = peekHeight, destination = true)
+                    else -> Unit
                 }
             },
             mapOverlay = {
@@ -191,6 +193,9 @@ fun BookingScreen(
                     .verticalScroll(rememberScrollState())
                 when (stage) {
                     BookingStage.CHOOSE_STOPS -> ChooseStopsSheet(state, onAction, modifier)
+                    BookingStage.CHOOSE_DESTINATION_ON_MAP -> state.destinationPin?.let {
+                        ChooseDestinationOnMapSheet(it, onAction, modifier)
+                    }
                     BookingStage.CHOOSE_VEHICLE -> ChooseVehicleSheet(state, onAction, modifier)
                     BookingStage.SEARCHING -> SearchingSheet(state, onAction, modifier)
                     BookingStage.TRIP -> TripSheet(state, onAction, modifier)
@@ -238,7 +243,10 @@ private fun BookingMap(
             if (stage != BookingStage.CHOOSE_STOPS && pickup != null) {
                 add(MapMarker(id = "pickup", position = pickup) { PickupMarker() })
             }
-            if (stage != BookingStage.CHOOSE_STOPS && stage != BookingStage.SEARCHING && dropoff != null) {
+            if (stage != BookingStage.CHOOSE_STOPS &&
+                stage != BookingStage.CHOOSE_DESTINATION_ON_MAP &&
+                dropoff != null
+            ) {
                 add(MapMarker(id = "dropoff", position = dropoff) { DestinationMarker() })
             }
             val rider = state.riderLocation
@@ -252,7 +260,11 @@ private fun BookingMap(
             }
         },
         polylines = listOfNotNull(
-            state.route?.takeIf { stage == BookingStage.CHOOSE_VEHICLE || stage == BookingStage.TRIP }
+            state.route?.takeIf {
+                stage == BookingStage.CHOOSE_VEHICLE ||
+                    stage == BookingStage.SEARCHING ||
+                    stage == BookingStage.TRIP
+            }
                 ?.let { route ->
                     MapPolyline(
                         id = "route",
@@ -315,6 +327,25 @@ private fun BoxScope.MapControls(
             }
         }
 
+        BookingStage.CHOOSE_DESTINATION_ON_MAP -> {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(spacing.lg)
+            ) {
+                GoZipoIconButton(
+                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(Res.string.back),
+                    onClick = { onAction(BookingAction.OnCancelDestinationPinClick) },
+                    style = GoZipoIconButtonStyle.MAP
+                )
+                Box(modifier = Modifier.weight(1f))
+                RecenterButton(onAction)
+            }
+        }
+
         BookingStage.TRIP -> Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -361,29 +392,32 @@ private fun AccountMenu(onLogoutClick: () -> Unit) {
     }
 }
 
-/** Pickup pin fixed at the camera center (the middle of the area above the sheet). */
+/**
+ * Pin fixed at the camera center (the middle of the area above the sheet): the pickup, or the
+ * destination while choosing it on the map.
+ */
 @Composable
-private fun CenterPin(bottomInset: Dp) {
+private fun CenterPin(bottomInset: Dp, destination: Boolean) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = bottomInset)
     ) {
-        PickupMarker(
-            // Lift the pin so its tip, not its middle, marks the center
-            modifier = Modifier.layout { measurable, constraints ->
-                val placeable = measurable.measure(constraints)
-                layout(placeable.width, placeable.height) {
-                    placeable.place(0, -placeable.height / 2)
-                }
+        // Lift the pin so its tip, not its middle, marks the center
+        val liftToTip = Modifier.layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints)
+            layout(placeable.width, placeable.height) {
+                placeable.place(0, -placeable.height / 2)
             }
-        )
+        }
+        if (destination) DestinationMarker(modifier = liftToTip) else PickupMarker(modifier = liftToTip)
     }
 }
 
 private fun BookingStage.sheetPeekHeight(): Dp = when (this) {
     BookingStage.CHOOSE_STOPS -> 220.dp
+    BookingStage.CHOOSE_DESTINATION_ON_MAP -> 220.dp
     BookingStage.CHOOSE_VEHICLE -> 460.dp
     BookingStage.SEARCHING -> 400.dp
     BookingStage.TRIP -> 300.dp
@@ -413,6 +447,10 @@ private fun ChooseStopsResolvingPreview() = BookingPreview(BookingPreviewData.ch
 @Preview
 @Composable
 private fun LocationDeniedPreview() = BookingPreview(BookingPreviewData.locationDenied)
+
+@Preview
+@Composable
+private fun ChooseDestinationOnMapPreview() = BookingPreview(BookingPreviewData.destinationOnMap)
 
 @Preview
 @Composable

@@ -9,18 +9,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mobile.booking.presentation.booking.BookingAction
 import com.mobile.booking.presentation.booking.BookingState
-import com.mobile.booking.presentation.util.description
-import com.mobile.booking.presentation.util.formatAmount
-import com.mobile.booking.presentation.util.formatKilometers
+import com.mobile.ride.presentation.util.description
+import com.mobile.ride.presentation.util.formatAmount
+import com.mobile.ride.presentation.util.SEARCH_ROUND
+import com.mobile.ride.presentation.util.formatKilometers
+import com.mobile.ride.presentation.util.rememberRemaining
+import com.mobile.ride.presentation.util.toCountdownText
 import com.mobile.core.designsystem.components.buttons.GoZipoButton
 import com.mobile.core.designsystem.components.buttons.GoZipoButtonStyle
 import com.mobile.core.designsystem.components.ride.CountdownHeader
@@ -52,14 +50,7 @@ import gozipo.feature.booking.presentation.generated.resources.search_again
 import gozipo.feature.booking.presentation.generated.resources.searching_round_ended
 import gozipo.feature.booking.presentation.generated.resources.searching_round_ended_hint
 import gozipo.feature.booking.presentation.generated.resources.searching_title
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
-import kotlin.time.Clock
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.Instant
-
-private val SEARCH_ROUND = 60.seconds
 
 /** "Searching for drivers 0:58", the fare to raise, and the riders' offers as they arrive. */
 @Composable
@@ -233,25 +224,4 @@ private fun distanceText(meters: Int): String = if (meters < 1_000) {
     stringResource(Res.string.distance_meters, meters)
 } else {
     stringResource(Res.string.distance_kilometers, formatKilometers(meters))
-}
-
-/** Time left until [expiresAt], ticking every second; zero once it passed or when there is none. */
-@Composable
-private fun rememberRemaining(expiresAt: Instant?): Duration {
-    var remaining by remember(expiresAt) { mutableStateOf(expiresAt.remaining()) }
-    LaunchedEffect(expiresAt) {
-        while (expiresAt != null && remaining > Duration.ZERO) {
-            delay(1.seconds)
-            remaining = expiresAt.remaining()
-        }
-    }
-    return remaining
-}
-
-private fun Instant?.remaining(): Duration =
-    this?.let { (it - Clock.System.now()).coerceAtLeast(Duration.ZERO) } ?: Duration.ZERO
-
-private fun Duration.toCountdownText(): String {
-    val seconds = inWholeSeconds
-    return "${seconds / 60}:${(seconds % 60).toString().padStart(2, '0')}"
 }

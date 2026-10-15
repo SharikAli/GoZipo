@@ -34,6 +34,8 @@ data class BookingState(
     val isRequesting: Boolean = false,
 
     val search: PlaceSearch? = null,
+    /** Choosing the destination by moving the map (from "Choose on map" in the destination search). */
+    val destinationPin: DestinationPin? = null,
 
     /** The customer's active ride (SEARCHING to IN_PROGRESS). */
     val ride: Ride? = null,
@@ -50,6 +52,7 @@ data class BookingState(
             ride != null && ride.status == RideStatus.SEARCHING -> BookingStage.SEARCHING
             ride != null -> BookingStage.TRIP
             finishedRide != null -> BookingStage.FINISHED
+            destinationPin != null -> BookingStage.CHOOSE_DESTINATION_ON_MAP
             dropoff != null -> BookingStage.CHOOSE_VEHICLE
             else -> BookingStage.CHOOSE_STOPS
         }
@@ -105,6 +108,8 @@ data class BookingState(
 
 enum class BookingStage {
     CHOOSE_STOPS,
+    /** The center pin is the destination; the pickup stays where it is. */
+    CHOOSE_DESTINATION_ON_MAP,
     CHOOSE_VEHICLE,
     SEARCHING,
     TRIP,
@@ -115,6 +120,17 @@ enum class SearchTarget {
     PICKUP,
     DROPOFF
 }
+
+/**
+ * The destination under the center pin while choosing it on the map.
+ *
+ * @param point null until the map is moved, so the pin isn't confirmed on top of the pickup
+ */
+data class DestinationPin(
+    val point: GeoPoint? = null,
+    val address: String? = null,
+    val isResolving: Boolean = false,
+)
 
 data class PlaceSearch(
     val target: SearchTarget,

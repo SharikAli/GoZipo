@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		A1C0FFEE0000000000000014 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000013 /* MapboxMaps */; };
+		A1C0FFEE0000000000000017 /* MapboxNavigationCore in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000016 /* MapboxNavigationCore */; };
+		A1C0FFEE0000000000000019 /* MapboxNavigationUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000018 /* MapboxNavigationUIKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +54,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1C0FFEE0000000000000014 /* MapboxMaps in Frameworks */,
+				A1C0FFEE0000000000000017 /* MapboxNavigationCore in Frameworks */,
+				A1C0FFEE0000000000000019 /* MapboxNavigationUIKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +103,8 @@
 			name = iosApp;
 			packageProductDependencies = (
 				A1C0FFEE0000000000000013 /* MapboxMaps */,
+				A1C0FFEE0000000000000016 /* MapboxNavigationCore */,
+				A1C0FFEE0000000000000018 /* MapboxNavigationUIKit */,
 			);
 			productName = iosApp;
 			productReference = 63787543C21A13D9AE77FE86 /* GoZipoRider.app */;
@@ -130,6 +136,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+				A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FFF00BA770278723A8DD1816 /* Products */;
@@ -267,6 +274,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "audio location";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -356,6 +364,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "audio location";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -398,7 +407,15 @@
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 11.26.0;
+				version = 11.32.1;
+			};
+		};
+		A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-navigation-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 3.32.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -408,6 +425,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
 			productName = MapboxMaps;
+		};
+		A1C0FFEE0000000000000016 /* MapboxNavigationCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxNavigationCore;
+		};
+		A1C0FFEE0000000000000018 /* MapboxNavigationUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxNavigationUIKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

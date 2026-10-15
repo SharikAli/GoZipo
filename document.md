@@ -1,6 +1,6 @@
 # GoZipo: Progress and Phase Plan
 
-Last updated: 2026-10-07
+Last updated: 2026-10-13
 
 Tick a box (`- [x]`) when an item is done and verified. Add new items under the phase they belong to.
 
@@ -15,7 +15,7 @@ Tick a box (`- [x]`) when an item is done and verified. Add new items under the 
 | 4 | Backend ride domain + realtime | Done except FCM device check |
 | 5 | Location + Mapbox | Done except on-device checks of the iOS map and location |
 | 6 | Customer ride flow | In progress: booking flow built, not yet tested end to end |
-| 7 | Rider ride flow | Not started |
+| 7 | Rider ride flow | Built, not yet tested end to end (tested together with Phase 6) |
 | 8 | Hardening | Not started |
 
 ---
@@ -227,6 +227,7 @@ All under `/api`, bearer token required.
 | `POST /rides/{id}/cancel` | Both | Cancel (customer until the trip starts; rider once assigned) |
 | `GET /rides/active` · `/rides/history?page=` · `/rides/{id}` | Both | Resync and history |
 | `GET /riders/me/status` · `PUT /riders/me/vehicle` | Rider | Vehicle profile |
+| `GET /riders/me/earnings?zone=` | Rider | Completed trips and cash fares today and in the last 7 days, by the rider's time zone |
 | `POST /riders/me/online` · `/offline` · `PUT /riders/me/location` | Rider | Availability (location normally over the WebSocket) |
 
 WebSocket messages: in `LOCATION_UPDATE` (rider); out `RIDE_REQUESTED`, `RIDE_UNAVAILABLE`, `OFFER_RECEIVED`, `OFFER_UPDATED`, `RIDE_UPDATED`, `SEARCH_ROUND_ENDED`, `RIDER_LOCATION`, `ERROR`.
@@ -267,7 +268,7 @@ Goal: a customer can book and complete a ride. Depends on Phases 4 and 5.
 
 The screen mirrors the backend: every change comes from a REST response or a realtime event, and it resyncs (`GET /rides/active`, then pending offers) each time the socket connects, so a restart or a dropped connection lands back on the right stage.
 
-- [x] Map home replaces the temporary Home screen in the customer app (the rider app keeps `HomeMapRoot` until Phase 7)
+- [x] Map home replaces the temporary Home screen in the customer app
 - [x] Pick pickup and drop-off: pickup pin at the map center with reverse geocoding, full-screen place search for either stop, tap the map for the destination
 - [x] Choose vehicle type and see the route; fares per type from `POST /rides/estimate`
 - [x] Offer a fare with the fare stepper (backend step and bounds), auto-accept switch, "Find offers"
@@ -277,20 +278,36 @@ The screen mirrors the backend: every change comes from a REST response or a rea
 - [x] Cancel ride (the backend enforces the allowed states; a 409 resyncs)
 - [ ] End-to-end test against the local backend with a rider (Android and iOS)
 - [ ] System back closes the place search (today only its back arrow does)
+- [x] "Choose on map" for the destination: the center pin becomes the destination (the pickup stays put), with its address and "Confirm destination". Before, the pin always moved the pickup
+- [ ] Place search coverage: Mapbox has almost no POI or street data for Pakistan (`/forward` with `country=PK` returns nothing for e.g. "Dolmen Mall", "Clifton", "Tariq Road"; only cities and some localities). Requests are sent and billed but come back empty. Needs a decision on another search provider behind `PlaceSearchService`
 - [ ] Ride history
 
 ## Phase 7: Rider ride flow
 
 Goal: a rider can receive, bid on and complete rides. Depends on Phases 3, 4 and 5.
 
-- [ ] Onboarding screen for the vehicle profile, required before going online
-- [ ] Go online / offline
-- [ ] Share location while online
-- [ ] Receive nearby ride requests in real time
-- [ ] Accept the customer's fare or counter-offer in PKR 10 steps
-- [ ] Navigate to pickup; mark arrived; start trip
-- [ ] Complete trip; fare and cash collection from the backend
-- [ ] Earnings and ride history
+| Layer | Where | What |
+| --- | --- | --- |
+| Domain | `:feature:ride:domain` | `OpenRide`, `RiderStatus`, `RiderEarnings`, `RideEvent.RideRequested`; rider calls on `RideService` (open rides, offers, trip steps) and `RiderService` (status, vehicle, online/offline, location, earnings) |
+| Data | `:feature:ride:data` | `KtorRideService`, `KtorRiderService` (location over the socket as `LOCATION_UPDATE`, REST when it isn't connected). Tests: `./gradlew :feature:ride:data:iosSimulatorArm64Test` |
+| Shared UI | `:feature:ride:presentation` | Vehicle type names and icons, fare/distance/minutes text, search countdown; used by booking and driving |
+| Presentation | `:feature:driving:presentation` (`drivingPresentationModule`) | `DrivingRoot` (map home; sheet follows the stage: no vehicle → offline → online with requests → trip → finished), `VehicleRoot`, `RideHistoryRoot` |
+
+Like the customer screen, the rider screen mirrors the backend and resyncs (`GET /rides/active`, rider status, open rides) on every socket connect and when the screen resumes.
+
+- [x] Onboarding screen for the vehicle profile, required before going online (opened automatically when the rider has none; editable from the menu outside a ride; saving takes the rider offline, as the backend does)
+- [x] Go online / offline (`POST /riders/me/online` with the current location; asks for location permission first)
+- [x] Share location while online and during a ride, every 5 s; a REST `RIDER_OFFLINE` reply (presence expired) shows the rider as offline
+- [x] Receive nearby ride requests in real time: `RIDE_REQUESTED` adds or re-prices a request, `RIDE_UNAVAILABLE` and a declined offer remove it; nearest pickup first, with the round's countdown
+- [x] Accept the customer's fare or counter-offer in PKR 10 steps up to the backend's limit; withdraw a pending offer; auto-accept rides assign the rider straight away
+- [x] Navigate to pickup (route from the rider to the pickup on the map); mark arrived; start trip
+- [x] Complete trip; fare and cash collection from the backend; cancel before the trip starts
+- [x] Earnings and ride history: totals from the new `GET /riders/me/earnings` (backend), finished rides paged from `/rides/history`
+- [x] Removed the temporary `HomeMapRoot` from `apps/common`
+- [ ] End-to-end test against the local backend together with the customer app (Android and iOS); also check the new earnings query on a running backend (it is only validated at startup)
+- [ ] Location while the app is in the background (Android foreground service, iOS background location mode); today sharing stops when the app is backgrounded and the backend drops the rider after 2 minutes
+- [x] In-app turn-by-turn navigation (no hand-off to the device's maps app): "Navigate to pickup" / "Navigate to destination" on the trip sheet opens `GoZipoNavigation` (`NavigationProvider` in `:core:map:api`), implemented with the Mapbox Navigation SDK v3 in `:core:map:navigation` (rider app only). Maneuver banner, voice guidance, rerouting, remaining time and distance, overview/recenter and mute. Guidance closes on arrival (the rider then taps the trip step), when the rider ends it, or when the ride ends. Android 3.32.1 (public Maven, `-ndk27`, Maps bumped to 11.32.1); iOS 3.32.1 Swift package with `NavigationViewController` (rider Maps package bumped to 11.32.1; background modes `audio` and `location`). `MAPBOX_SIMULATE_NAVIGATION=true` in `local.properties` drives a simulated location along the route
+- [ ] Device check of turn-by-turn guidance on Android and iOS with a real token (route, voice, reroute, arrival, light/dark)
 
 ## Phase 8: Hardening
 

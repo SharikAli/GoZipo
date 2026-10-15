@@ -134,3 +134,45 @@ data class RideRefDto(
 /** Empty body for endpoints that take none. */
 @Serializable
 class EmptyRequestDto
+
+@Serializable
+data class OpenRideDto(
+    val rideId: String,
+    val vehicleType: VehicleType,
+    val pickup: StopDto,
+    val dropoff: StopDto,
+    val distanceMeters: Int,
+    val durationSeconds: Int,
+    val offeredFare: Int,
+    val maximumCounterFare: Int,
+    val fareStep: Int,
+    val pickupDistanceMeters: Int? = null,
+    val searchRound: Int,
+    val searchExpiresAt: String? = null,
+    val customer: RideCustomerDto,
+    val myOffer: OfferDto? = null
+)
+
+/** Null [amount] takes the customer's fare as-is. */
+@Serializable
+data class SubmitOfferRequestDto(
+    val amount: Int? = null
+)
+
+@Serializable
+data class RiderStatusDto(
+    val online: Boolean,
+    val vehicle: VehicleDto? = null
+)
+
+@Serializable
+data class EarningsPeriodDto(
+    val trips: Int,
+    val amount: Int
+)
+
+@Serializable
+data class EarningsDto(
+    val today: EarningsPeriodDto,
+    val last7Days: EarningsPeriodDto
+)

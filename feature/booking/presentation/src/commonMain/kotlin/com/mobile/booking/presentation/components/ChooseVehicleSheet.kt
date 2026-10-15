@@ -15,8 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.mobile.booking.presentation.booking.BookingAction
 import com.mobile.booking.presentation.booking.BookingState
-import com.mobile.booking.presentation.util.formatAmount
-import com.mobile.booking.presentation.util.toUi
+import com.mobile.ride.presentation.util.formatAmount
+import com.mobile.ride.presentation.util.toUi
 import com.mobile.core.designsystem.components.buttons.GoZipoButton
 import com.mobile.core.designsystem.components.buttons.GoZipoButtonStyle
 import com.mobile.core.designsystem.components.ride.DefaultVehicleImage

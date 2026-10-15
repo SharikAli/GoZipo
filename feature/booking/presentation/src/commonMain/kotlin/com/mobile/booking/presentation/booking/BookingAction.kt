@@ -17,6 +17,8 @@ sealed interface BookingAction {
     data class OnPlaceSelected(val place: Place) : BookingAction
     data object OnChooseOnMapClick : BookingAction
     data object OnClearDropoffClick : BookingAction
+    data object OnConfirmDestinationPinClick : BookingAction
+    data object OnCancelDestinationPinClick : BookingAction
 
     data class OnVehicleSelected(val vehicleType: VehicleType) : BookingAction
     data object OnRetryEstimatesClick : BookingAction

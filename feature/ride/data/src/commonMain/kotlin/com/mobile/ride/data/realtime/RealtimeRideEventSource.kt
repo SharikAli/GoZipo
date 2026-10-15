@@ -8,9 +8,11 @@ import com.mobile.core.domain.location.GeoPoint
 import com.mobile.ride.data.RideJson
 import com.mobile.ride.data.dto.IncomingWebSocketType
 import com.mobile.ride.data.dto.OfferDto
+import com.mobile.ride.data.dto.OpenRideDto
 import com.mobile.ride.data.dto.RideDto
 import com.mobile.ride.data.dto.RideRefDto
 import com.mobile.ride.data.dto.RiderLocationDto
+import com.mobile.ride.data.mappers.toOpenRide
 import com.mobile.ride.data.mappers.toRide
 import com.mobile.ride.data.mappers.toRideOffer
 import com.mobile.ride.domain.RideEvent
@@ -42,7 +44,7 @@ class RealtimeRideEventSource(
             }
         }
 
-    /** Null for messages this app doesn't handle (e.g. a rider's RIDE_REQUESTED in the customer app). */
+    /** Null for messages this app doesn't handle (e.g. ERROR replies). */
     private fun RealtimeMessage.toRideEvent(): RideEvent? = when (type) {
         IncomingWebSocketType.RIDE_UPDATED.name -> RideEvent.RideUpdated(decode<RideDto>().toRide())
         IncomingWebSocketType.SEARCH_ROUND_ENDED.name -> RideEvent.SearchRoundEnded(decode<RideDto>().toRide())
@@ -52,6 +54,7 @@ class RealtimeRideEventSource(
             RideEvent.RiderLocation(rideId = it.rideId, point = GeoPoint(it.latitude, it.longitude))
         }
 
+        IncomingWebSocketType.RIDE_REQUESTED.name -> RideEvent.RideRequested(decode<OpenRideDto>().toOpenRide())
         IncomingWebSocketType.RIDE_UNAVAILABLE.name -> RideEvent.RideUnavailable(decode<RideRefDto>().rideId)
         else -> null
     }

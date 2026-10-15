@@ -27,14 +27,19 @@ class RealtimeRideEventSourceTest {
 
     private fun source(vararg messages: RealtimeMessage) = RealtimeRideEventSource(
         realtimeClient = object : RealtimeClient {
-            override val connectionState: StateFlow<ConnectionState> = MutableStateFlow(ConnectionState.CONNECTED)
+            override val connectionState: StateFlow<ConnectionState> =
+                MutableStateFlow(ConnectionState.CONNECTED)
             override val messages = flowOf(*messages)
-            override suspend fun send(message: RealtimeMessage): EmptyResult<DataError.Connection> = Result.Success(Unit)
+            override suspend fun send(message: RealtimeMessage): EmptyResult<DataError.Connection> =
+                Result.Success(Unit)
         },
         logger = object : GoZipoLogger {
             override fun debug(message: String) = Unit
             override fun info(message: String) = Unit
-            override fun warn(message: String) { warnings += message }
+            override fun warn(message: String) {
+                warnings += message
+            }
+
             override fun error(message: String, throwable: Throwable?) = Unit
         }
     )
@@ -44,7 +49,10 @@ class RealtimeRideEventSourceTest {
         val events = source(
             RealtimeMessage("RIDE_UPDATED", RIDE_JSON),
             RealtimeMessage("OFFER_RECEIVED", OFFER_JSON),
-            RealtimeMessage("RIDER_LOCATION", """{"rideId":"ride-1","latitude":24.9,"longitude":67.1}""")
+            RealtimeMessage(
+                "RIDER_LOCATION",
+                """{"rideId":"ride-1","latitude":24.9,"longitude":67.1}"""
+            )
         ).events.toList()
 
         val ride = assertIs<RideEvent.RideUpdated>(events[0]).ride
@@ -62,9 +70,21 @@ class RealtimeRideEventSourceTest {
     }
 
     @Test
+    fun decodesRideRequests() = runTest {
+        val event =
+            source(RealtimeMessage("RIDE_REQUESTED", OPEN_RIDE_JSON)).events.toList().single()
+
+        val ride = assertIs<RideEvent.RideRequested>(event).ride
+        assertEquals(560, ride.offeredFare)
+        assertEquals(840, ride.maximumCounterFare)
+        assertEquals(2, ride.searchRound)
+        assertEquals(null, ride.myOffer)
+    }
+
+    @Test
     fun skipsUnknownTypesAndBrokenPayloadsWithoutLoggingThem() = runTest {
         val events = source(
-            RealtimeMessage("RIDE_REQUESTED", "{}"),
+            RealtimeMessage("ERROR", """{"code":"RIDER_OFFLINE"}"""),
             RealtimeMessage("OFFER_UPDATED", """{"secret":"address"}"""),
             RealtimeMessage("RIDE_UNAVAILABLE", """{"rideId":"ride-1"}""")
         ).events.toList()

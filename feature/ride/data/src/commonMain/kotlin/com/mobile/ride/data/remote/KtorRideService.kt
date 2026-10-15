@@ -1,5 +1,6 @@
 package com.mobile.ride.data.remote
 
+import com.mobile.core.data.network.delete
 import com.mobile.core.data.network.get
 import com.mobile.core.data.network.post
 import com.mobile.core.domain.location.GeoPoint
@@ -14,13 +15,17 @@ import com.mobile.ride.data.dto.EmptyRequestDto
 import com.mobile.ride.data.dto.FareEstimateDto
 import com.mobile.ride.data.dto.FareEstimateRequestDto
 import com.mobile.ride.data.dto.OfferDto
+import com.mobile.ride.data.dto.OpenRideDto
 import com.mobile.ride.data.dto.RideDto
+import com.mobile.ride.data.dto.SubmitOfferRequestDto
 import com.mobile.ride.data.dto.UpdateFareRequestDto
 import com.mobile.ride.data.mappers.toDto
 import com.mobile.ride.data.mappers.toFareEstimate
+import com.mobile.ride.data.mappers.toOpenRide
 import com.mobile.ride.data.mappers.toRide
 import com.mobile.ride.data.mappers.toRideOffer
 import com.mobile.ride.domain.FareEstimate
+import com.mobile.ride.domain.OpenRide
 import com.mobile.ride.domain.Ride
 import com.mobile.ride.domain.RideOffer
 import com.mobile.ride.domain.RideRequest
@@ -92,6 +97,45 @@ class KtorRideService(
             route = "/rides/$rideId/offers/$offerId/decline",
             body = EmptyRequestDto()
         )
+    }
+
+    override suspend fun getOpenRides(): Result<List<OpenRide>, DataError.Remote> {
+        return httpClient.get<List<OpenRideDto>>(
+            route = "/rides/open"
+        ).map { rides -> rides.map { it.toOpenRide() } }
+    }
+
+    override suspend fun submitOffer(
+        rideId: String,
+        amount: Int?
+    ): Result<RideOffer, DataError.Remote> {
+        return httpClient.post<SubmitOfferRequestDto, OfferDto>(
+            route = "/rides/$rideId/offers",
+            body = SubmitOfferRequestDto(amount)
+        ).map { it.toRideOffer() }
+    }
+
+    override suspend fun withdrawOffer(
+        rideId: String,
+        offerId: String
+    ): EmptyResult<DataError.Remote> {
+        return httpClient.delete<Unit>(route = "/rides/$rideId/offers/$offerId")
+    }
+
+    override suspend fun markArrived(rideId: String): Result<Ride, DataError.Remote> =
+        tripStep(rideId, "arrived")
+
+    override suspend fun startTrip(rideId: String): Result<Ride, DataError.Remote> =
+        tripStep(rideId, "start")
+
+    override suspend fun completeTrip(rideId: String): Result<Ride, DataError.Remote> =
+        tripStep(rideId, "complete")
+
+    private suspend fun tripStep(rideId: String, step: String): Result<Ride, DataError.Remote> {
+        return httpClient.post<EmptyRequestDto, RideDto>(
+            route = "/rides/$rideId/$step",
+            body = EmptyRequestDto()
+        ).map { it.toRide() }
     }
 
     override suspend fun cancelRide(

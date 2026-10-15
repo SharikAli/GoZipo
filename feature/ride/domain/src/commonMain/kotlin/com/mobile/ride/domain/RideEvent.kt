@@ -19,6 +19,9 @@ sealed interface RideEvent {
     /** Customer: where the assigned rider is now. */
     data class RiderLocation(val rideId: String, val point: GeoPoint) : RideEvent
 
+    /** Rider: a new request nearby, or one they saw was re-priced (new search round). */
+    data class RideRequested(val ride: OpenRide) : RideEvent
+
     /** Rider: a request they saw is no longer open. */
     data class RideUnavailable(val rideId: String) : RideEvent
 }

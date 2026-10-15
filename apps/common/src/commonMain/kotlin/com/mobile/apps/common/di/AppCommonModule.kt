@@ -1,7 +1,6 @@
 package com.mobile.apps.common.di
 
 import com.mobile.apps.common.MainViewModel
-import com.mobile.apps.common.home.HomeMapViewModel
 import com.mobile.core.domain.auth.UserRole
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +15,6 @@ import org.koin.dsl.module
 fun appCommonModule(appRole: UserRole) = module {
     single { appRole }
     viewModelOf(::MainViewModel)
-    viewModelOf(::HomeMapViewModel)
     single {
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }

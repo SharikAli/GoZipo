@@ -46,3 +46,22 @@ internal const val OFFER_JSON = """
   "createdAt": "2026-10-07T11:00:20Z"
 }
 """
+
+internal const val OPEN_RIDE_JSON = """
+{
+  "rideId": "6f1c2a52-0000-4000-8000-000000000001",
+  "vehicleType": "MINI",
+  "pickup": { "location": { "latitude": 24.9425, "longitude": 67.114 }, "address": "Dr Abdus Salam Rd" },
+  "dropoff": { "location": { "latitude": 24.93, "longitude": 67.07 }, "address": "Aisha Manzil" },
+  "distanceMeters": 9800,
+  "durationSeconds": 1320,
+  "offeredFare": 560,
+  "maximumCounterFare": 840,
+  "fareStep": 10,
+  "pickupDistanceMeters": 850,
+  "searchRound": 2,
+  "searchExpiresAt": "2026-10-07T11:01:00Z",
+  "customer": { "id": "c-1", "username": "sharik" },
+  "myOffer": null
+}
+"""

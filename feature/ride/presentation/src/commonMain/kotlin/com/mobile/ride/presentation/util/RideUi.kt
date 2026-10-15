@@ -1,4 +1,4 @@
-package com.mobile.booking.presentation.util
+package com.mobile.ride.presentation.util
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsCar
@@ -8,20 +8,20 @@ import androidx.compose.material.icons.filled.TwoWheeler
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.mobile.ride.domain.Vehicle
 import com.mobile.ride.domain.VehicleType
-import gozipo.feature.booking.presentation.generated.resources.Res
-import gozipo.feature.booking.presentation.generated.resources.vehicle_mini
-import gozipo.feature.booking.presentation.generated.resources.vehicle_mini_description
-import gozipo.feature.booking.presentation.generated.resources.vehicle_moto
-import gozipo.feature.booking.presentation.generated.resources.vehicle_moto_description
-import gozipo.feature.booking.presentation.generated.resources.vehicle_premium
-import gozipo.feature.booking.presentation.generated.resources.vehicle_premium_description
-import gozipo.feature.booking.presentation.generated.resources.vehicle_rickshaw
-import gozipo.feature.booking.presentation.generated.resources.vehicle_rickshaw_description
-import gozipo.feature.booking.presentation.generated.resources.vehicle_ride_ac
-import gozipo.feature.booking.presentation.generated.resources.vehicle_ride_ac_description
+import gozipo.feature.ride.presentation.generated.resources.Res
+import gozipo.feature.ride.presentation.generated.resources.vehicle_mini
+import gozipo.feature.ride.presentation.generated.resources.vehicle_mini_description
+import gozipo.feature.ride.presentation.generated.resources.vehicle_moto
+import gozipo.feature.ride.presentation.generated.resources.vehicle_moto_description
+import gozipo.feature.ride.presentation.generated.resources.vehicle_premium
+import gozipo.feature.ride.presentation.generated.resources.vehicle_premium_description
+import gozipo.feature.ride.presentation.generated.resources.vehicle_rickshaw
+import gozipo.feature.ride.presentation.generated.resources.vehicle_rickshaw_description
+import gozipo.feature.ride.presentation.generated.resources.vehicle_ride_ac
+import gozipo.feature.ride.presentation.generated.resources.vehicle_ride_ac_description
 import org.jetbrains.compose.resources.StringResource
 
-/** How a vehicle type is shown in the "Select vehicle" list. */
+/** How a vehicle type is shown: name, one-line description, seats and icon. */
 data class VehicleTypeUi(
     val title: StringResource,
     val description: StringResource,

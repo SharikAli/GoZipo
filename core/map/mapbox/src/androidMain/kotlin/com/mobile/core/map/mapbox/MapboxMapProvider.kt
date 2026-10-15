@@ -59,6 +59,8 @@ class MapboxMapProvider(accessToken: String) : MapProvider {
     private companion object {
         const val ANIMATION_MILLIS = 600L
         const val CASING_WIDTH = 1.5
+        // Full brightness: the Standard style's night lighting otherwise darkens annotations
+        const val FULL_EMISSIVE_STRENGTH = 1.0
     }
 
     init {
@@ -151,6 +153,7 @@ class MapboxMapProvider(accessToken: String) : MapProvider {
                         state.lineColor = polyline.color
                         state.lineWidth = polyline.width.value.toDouble()
                         state.lineJoin = LineJoin.ROUND
+                        state.lineEmissiveStrength = FULL_EMISSIVE_STRENGTH
                         state.lineBorderColor = polyline.casingColor
                         state.lineBorderWidth = if (polyline.casingColor != null) CASING_WIDTH else 0.0
                     }
@@ -175,6 +178,8 @@ class MapboxMapProvider(accessToken: String) : MapProvider {
                                 )
                             }
                             allowOverlap(true)
+                            // The pickup is usually the user's own location
+                            allowOverlapWithPuck(true)
                         }
                     ) {
                         marker.content()

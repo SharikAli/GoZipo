@@ -1,19 +1,27 @@
 package com.mobile.ride.data.mappers
 
 import com.mobile.core.domain.location.GeoPoint
+import com.mobile.ride.data.dto.EarningsDto
+import com.mobile.ride.data.dto.EarningsPeriodDto
 import com.mobile.ride.data.dto.FareEstimateDto
 import com.mobile.ride.data.dto.LocationDto
 import com.mobile.ride.data.dto.OfferDto
+import com.mobile.ride.data.dto.OpenRideDto
 import com.mobile.ride.data.dto.RideCustomerDto
 import com.mobile.ride.data.dto.RideDto
 import com.mobile.ride.data.dto.RideRiderDto
+import com.mobile.ride.data.dto.RiderStatusDto
 import com.mobile.ride.data.dto.StopDto
 import com.mobile.ride.data.dto.VehicleDto
+import com.mobile.ride.domain.EarningsPeriod
 import com.mobile.ride.domain.FareEstimate
+import com.mobile.ride.domain.OpenRide
 import com.mobile.ride.domain.Ride
 import com.mobile.ride.domain.RideCustomer
 import com.mobile.ride.domain.RideOffer
 import com.mobile.ride.domain.RideRider
+import com.mobile.ride.domain.RiderEarnings
+import com.mobile.ride.domain.RiderStatus
 import com.mobile.ride.domain.RideStop
 import com.mobile.ride.domain.Vehicle
 import kotlin.time.Duration.Companion.seconds
@@ -45,9 +53,27 @@ fun VehicleDto.toVehicle() = Vehicle(
     plateNumber = plateNumber
 )
 
+fun Vehicle.toDto() = VehicleDto(
+    vehicleType = type,
+    make = make,
+    model = model,
+    color = color,
+    plateNumber = plateNumber
+)
+
+fun RiderStatusDto.toRiderStatus() = RiderStatus(online = online, vehicle = vehicle?.toVehicle())
+
+fun EarningsPeriodDto.toEarningsPeriod() = EarningsPeriod(trips = trips, amount = amount)
+
+fun EarningsDto.toRiderEarnings() = RiderEarnings(
+    today = today.toEarningsPeriod(),
+    last7Days = last7Days.toEarningsPeriod()
+)
+
 fun RideCustomerDto.toRideCustomer() = RideCustomer(id = id, username = username)
 
-fun RideRiderDto.toRideRider() = RideRider(id = id, username = username, vehicle = vehicle?.toVehicle())
+fun RideRiderDto.toRideRider() =
+    RideRider(id = id, username = username, vehicle = vehicle?.toVehicle())
 
 fun RideDto.toRide() = Ride(
     id = id,
@@ -85,6 +111,23 @@ fun OfferDto.toRideOffer() = RideOffer(
     rider = rider.toRideRider(),
     pickupDistanceMeters = pickupDistanceMeters,
     createdAt = createdAt.toInstant()
+)
+
+fun OpenRideDto.toOpenRide() = OpenRide(
+    rideId = rideId,
+    vehicleType = vehicleType,
+    pickup = pickup.toRideStop(),
+    dropoff = dropoff.toRideStop(),
+    distanceMeters = distanceMeters,
+    duration = durationSeconds.seconds,
+    offeredFare = offeredFare,
+    maximumCounterFare = maximumCounterFare,
+    fareStep = fareStep,
+    pickupDistanceMeters = pickupDistanceMeters,
+    searchRound = searchRound,
+    searchExpiresAt = searchExpiresAt?.toInstant(),
+    customer = customer.toRideCustomer(),
+    myOffer = myOffer?.toRideOffer()
 )
 
 private fun String.toInstant(): Instant = Instant.parse(this)

@@ -98,3 +98,44 @@ data class RideRequest(
     val offeredFare: Int,
     val autoAccept: Boolean
 )
+
+/**
+ * A request a rider can offer on: the customer's fare and how high a counter-offer may go.
+ *
+ * @param pickupDistanceMeters straight-line distance from the rider to the pickup, when known
+ * @param myOffer this rider's offer in the current round, if any
+ */
+data class OpenRide(
+    val rideId: String,
+    val vehicleType: VehicleType,
+    val pickup: RideStop,
+    val dropoff: RideStop,
+    val distanceMeters: Int,
+    val duration: Duration,
+    val offeredFare: Int,
+    val maximumCounterFare: Int,
+    val fareStep: Int,
+    val pickupDistanceMeters: Int?,
+    val searchRound: Int,
+    val searchExpiresAt: Instant?,
+    val customer: RideCustomer,
+    val myOffer: RideOffer?
+)
+
+/** The signed-in rider's availability; [vehicle] is null until the rider adds one. */
+data class RiderStatus(
+    val online: Boolean,
+    val vehicle: Vehicle?
+)
+
+/** Completed trips and their cash fares (PKR) in one period, summed by the backend. */
+data class EarningsPeriod(
+    val trips: Int,
+    val amount: Int
+)
+
+/** The rider's earnings by their local day: today and the last 7 days including today. */
+data class RiderEarnings(
+    val today: EarningsPeriod,
+    val last7Days: EarningsPeriod
+)

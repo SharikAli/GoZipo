@@ -5,7 +5,7 @@ package com.mobile.booking.presentation.booking
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobile.booking.presentation.util.distanceMetersTo
+import com.mobile.ride.presentation.util.distanceMetersTo
 import com.mobile.booking.presentation.util.label
 import com.mobile.core.domain.location.GeoPoint
 import com.mobile.core.domain.location.LocationError
@@ -36,7 +36,6 @@ import gozipo.feature.booking.presentation.generated.resources.Res
 import gozipo.feature.booking.presentation.generated.resources.error_active_ride_exists
 import gozipo.feature.booking.presentation.generated.resources.error_fare_out_of_range
 import gozipo.feature.booking.presentation.generated.resources.error_ride_changed
-import gozipo.feature.booking.presentation.generated.resources.tap_map_for_destination
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -68,7 +67,7 @@ class BookingViewModel(
 ) : ViewModel() {
 
     private companion object {
-        const val SEARCH_DEBOUNCE_MILLIS = 300L
+        const val SEARCH_DEBOUNCE_MILLIS = 1000L
         const val MIN_QUERY_LENGTH = 2
 
         /** Camera settling this close to the pickup doesn't move it (keeps a searched address). */
@@ -122,6 +121,8 @@ class BookingViewModel(
             is BookingAction.OnPlaceSelected -> onPlaceSelected(action.place)
             BookingAction.OnChooseOnMapClick -> chooseOnMap()
             BookingAction.OnClearDropoffClick -> clearDropoff()
+            BookingAction.OnConfirmDestinationPinClick -> confirmDestinationPin()
+            BookingAction.OnCancelDestinationPinClick -> cancelDestinationPin()
 
             is BookingAction.OnVehicleSelected -> selectVehicle(action.vehicleType)
             BookingAction.OnRetryEstimatesClick -> loadStops()
@@ -175,9 +176,16 @@ class BookingViewModel(
         }
     }
 
-    /** While choosing stops, the pin in the middle of the map is the pickup. */
+    /**
+     * The pin in the middle of the map is the pickup while choosing stops, or the destination
+     * after "Choose on map" in the destination search.
+     */
     private fun onCameraIdle(center: GeoPoint) {
         val state = _state.value
+        if (state.stage == BookingStage.CHOOSE_DESTINATION_ON_MAP) {
+            moveDestinationPin(center)
+            return
+        }
         if (state.stage != BookingStage.CHOOSE_STOPS) return
         val pickup = state.pickup
         if (pickup != null && pickup.distanceMetersTo(center) < PICKUP_TOLERANCE_METERS) return
@@ -195,9 +203,14 @@ class BookingViewModel(
 
     private fun onMapClick(point: GeoPoint) {
         val stage = _state.value.stage
-        if (stage != BookingStage.CHOOSE_STOPS && stage != BookingStage.CHOOSE_VEHICLE) return
+        if (stage != BookingStage.CHOOSE_STOPS &&
+            stage != BookingStage.CHOOSE_VEHICLE &&
+            stage != BookingStage.CHOOSE_DESTINATION_ON_MAP
+        ) return
         if (_state.value.pickup == null) return
 
+        reverseGeocodeJob?.cancel()
+        _state.update { it.copy(destinationPin = null) }
         setDropoff(Place(id = "map", name = "", address = "", point = point))
         viewModelScope.launch {
             placeSearchService.reverseGeocode(point).onSuccess { place ->
@@ -286,8 +299,80 @@ class BookingViewModel(
         when (target) {
             // The pickup pin only exists while choosing stops
             SearchTarget.PICKUP -> clearDropoff()
-            SearchTarget.DROPOFF -> viewModelScope.launch {
-                eventChannel.send(BookingEvent.ShowMessage(UiText.Resource(Res.string.tap_map_for_destination)))
+            SearchTarget.DROPOFF -> {
+                // Starts at the current destination when changing it, otherwise waits for the map to move
+                val current = _state.value.dropoff
+                _state.update {
+                    it.copy(
+                        destinationPin = DestinationPin(
+                            point = current?.point,
+                            address = current?.label()?.takeIf(String::isNotBlank)
+                        )
+                    )
+                }
+                val center = current?.point ?: _state.value.pickup
+                center?.let { viewModelScope.launch { eventChannel.send(BookingEvent.CenterOn(it)) } }
+            }
+        }
+    }
+
+    // Destination on the map
+
+    private fun moveDestinationPin(center: GeoPoint) {
+        val pin = _state.value.destinationPin ?: return
+        val current = pin.point
+        if (current != null && current.distanceMetersTo(center) < PICKUP_TOLERANCE_METERS) return
+        // The camera settling on the pickup when this step opens isn't a choice yet
+        val pickup = _state.value.pickup
+        if (current == null && pickup != null && pickup.distanceMetersTo(center) < PICKUP_TOLERANCE_METERS) return
+
+        _state.update {
+            it.copy(
+                destinationPin = DestinationPin(
+                    point = center,
+                    isResolving = true
+                )
+            )
+        }
+        reverseGeocodeJob?.cancel()
+        reverseGeocodeJob = viewModelScope.launch {
+            val address = when (val result = placeSearchService.reverseGeocode(center)) {
+                is Result.Success -> result.data?.label()
+                is Result.Failure -> null
+            }
+            _state.update { state ->
+                val latest = state.destinationPin
+                if (latest?.point != center) return@update state
+                state.copy(destinationPin = latest.copy(address = address, isResolving = false))
+            }
+        }
+    }
+
+    private fun confirmDestinationPin() {
+        val pin = _state.value.destinationPin ?: return
+        val point = pin.point ?: return
+        if (pin.isResolving) return
+        _state.update { it.copy(destinationPin = null) }
+        setDropoff(Place(id = "map", name = pin.address.orEmpty(), address = "", point = point))
+    }
+
+    private fun cancelDestinationPin() {
+        reverseGeocodeJob?.cancel()
+        _state.update { it.copy(destinationPin = null) }
+        val state = _state.value
+        viewModelScope.launch {
+            when {
+                // Back to the trip that was already set
+                state.dropoff != null -> eventChannel.send(
+                    BookingEvent.FitPoints(
+                        state.route?.points ?: listOfNotNull(
+                            state.pickup,
+                            state.dropoff.point
+                        )
+                    )
+                )
+
+                state.pickup != null -> eventChannel.send(BookingEvent.CenterOn(state.pickup))
             }
         }
     }
@@ -553,7 +638,7 @@ class BookingViewModel(
                 }
             }
 
-            is RideEvent.RideUnavailable -> Unit
+            is RideEvent.RideRequested, is RideEvent.RideUnavailable -> Unit
         }
     }
 
