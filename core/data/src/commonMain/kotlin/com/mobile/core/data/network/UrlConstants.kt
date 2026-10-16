@@ -4,8 +4,8 @@ import com.mobile.core.data.BuildKonfig
 
 object UrlConstants {
     // Android Emulator
-    const val ANDROID_EMULATOR_BASE_URL_HTTP = "http://192.168.0.101:8080/api"
-    const val ANDROID_EMULATOR_BASE_URL_WS = "ws://192.168.0.101:8080/ws"
+    const val ANDROID_EMULATOR_BASE_URL_HTTP = "http://192.168.0.107:8080/api"
+    const val ANDROID_EMULATOR_BASE_URL_WS = "ws://192.168.0.107:8080/ws"
 
     // IOS simulator
     const val BASE_URL_HTTP = "http://localhost:8080/api"

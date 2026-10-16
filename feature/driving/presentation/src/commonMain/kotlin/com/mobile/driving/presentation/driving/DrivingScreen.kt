@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,6 +85,11 @@ fun DrivingRoot(
     val permissionController = rememberPermissionController()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    // Ride updates arrive as push notifications while the app is in the background
+    LaunchedEffect(Unit) {
+        permissionController.requestPermission(Permission.NOTIFICATIONS)
+    }
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {

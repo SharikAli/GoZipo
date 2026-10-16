@@ -91,6 +91,11 @@ fun BookingRoot(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    // Ride updates arrive as push notifications while the app is in the background
+    LaunchedEffect(Unit) {
+        permissionController.requestPermission(Permission.NOTIFICATIONS)
+    }
+
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             BookingEvent.RequestLocationPermission -> scope.launch {

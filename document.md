@@ -10,7 +10,7 @@ Tick a box (`- [x]`) when an item is done and verified. Add new items under the 
 | --- | --- | --- |
 | 0 | Project foundation | Done |
 | 1 | Design system | Done |
-| 2 | Customer auth UI + Android passkeys | Done |
+| 2 | Customer auth UI + passkeys (Android, iOS) | Done (iOS device test pending) |
 | 3 | Multi-app setup + Rider app shell | Done |
 | 4 | Backend ride domain + realtime | Done except FCM device check |
 | 5 | Location + Mapbox | Done except on-device checks of the iOS map and location |
@@ -91,11 +91,15 @@ GoZipo is a ride-hailing system built to learn Mapbox, with no Google Maps.
 - [x] `PasskeyService` (domain) / `KtorPasskeyService` (data) for `/auth/passkey/*`
 - [x] `PasskeyAuthenticator` (domain), implemented in the data layer:
   - Android: `CredentialManagerPasskeyAuthenticator` (Credential Manager 1.6.0)
-  - iOS: `UnsupportedPasskeyAuthenticator` (passkey buttons hidden)
+  - iOS: `AuthenticationServicesPasskeyAuthenticator` (AuthenticationServices, called from Kotlin; no Swift bridge). It turns the backend's WebAuthn options into an `ASAuthorizationPlatformPublicKeyCredentialProvider` request and returns the same WebAuthn response JSON as Android
 - [x] `CurrentActivityProvider`: weak reference to the foreground Activity for Credential Manager
 - [x] Usernameless passkey login; no passkey on the phone routes to passkey sign-up
 - [x] Cancelled passkey prompt reuses the sign-up request (the email code is single use)
 - [x] Tested on a physical Android device: sign-up, login, passkey visible in Samsung Pass
+- [x] iOS passkeys (both apps):
+  - Associated Domains `webcredentials:$(PASSKEY_RP_ID)`, with `?mode=developer` in Debug. The host is set in each app's `Configuration/Config.xcconfig`
+  - Backend: `/.well-known/apple-app-site-association` (`APPLE_APP_IDS`), and the RP ID's `https://` origin accepted
+- [ ] iOS passkeys on a device: set `TEAM_ID`, set `APPLE_APP_IDS=<team>.com.mobile.gozipo,<team>.com.mobile.gozipo.rider` on the backend, then test sign-up and login
 
 ### Fixes found while testing
 
