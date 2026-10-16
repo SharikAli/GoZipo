@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1C0FFEE0000000000000104 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000103 /* FirebaseCore */; };
+		A1C0FFEE0000000000000106 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000105 /* FirebaseMessaging */; };
 		BE3ECB8C3076650F009E64A2 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = BE3ECB8B3076650F009E64A2 /* MapboxMaps */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +38,12 @@
 			path = "../../ios-common/Mapbox";
 			sourceTree = "<group>";
 		};
+		A1C0FFEE0000000000000101 /* Push */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = Push;
+			path = "../../ios-common/Push";
+			sourceTree = "<group>";
+		};
 		DD237F420F561247FD29DF19 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -52,6 +60,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE3ECB8C3076650F009E64A2 /* MapboxMaps in Frameworks */,
+				A1C0FFEE0000000000000104 /* FirebaseCore in Frameworks */,
+				A1C0FFEE0000000000000106 /* FirebaseMessaging in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +74,7 @@
 				42C9A272373E59EFE514B873 /* Configuration */,
 				DD237F420F561247FD29DF19 /* iosApp */,
 				A1C0FFEE0000000000000001 /* Mapbox */,
+				A1C0FFEE0000000000000101 /* Push */,
 				FFF00BA770278723A8DD1816 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -94,11 +105,14 @@
 			);
 			fileSystemSynchronizedGroups = (
 				A1C0FFEE0000000000000001 /* Mapbox */,
+				A1C0FFEE0000000000000101 /* Push */,
 				DD237F420F561247FD29DF19 /* iosApp */,
 			);
 			name = iosApp;
 			packageProductDependencies = (
 				BE3ECB8B3076650F009E64A2 /* MapboxMaps */,
+				A1C0FFEE0000000000000103 /* FirebaseCore */,
+				A1C0FFEE0000000000000105 /* FirebaseMessaging */,
 			);
 			productName = iosApp;
 			productReference = 63787543C21A13D9AE77FE86 /* GoZipo.app */;
@@ -130,6 +144,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BE3ECB8A3076650F009E64A2 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+				A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FFF00BA770278723A8DD1816 /* Products */;
@@ -393,6 +408,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.15.0;
+			};
+		};
 		BE3ECB8A3076650F009E64A2 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
@@ -404,6 +427,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A1C0FFEE0000000000000103 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		A1C0FFEE0000000000000105 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
 		BE3ECB8B3076650F009E64A2 /* MapboxMaps */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BE3ECB8A3076650F009E64A2 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;

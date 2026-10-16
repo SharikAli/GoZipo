@@ -4,6 +4,9 @@ import RiderShared
 @main
 struct iOSApp: App {
     
+    // Firebase push (apps/ios-common/Push/GoZipoAppDelegate.swift)
+    @UIApplicationDelegateAdaptor(GoZipoAppDelegate.self) var appDelegate
+    
     init() {
         IosInitKoinKt.doInitKoin(
             mapboxFactory: GoZipoMapboxBridgeFactory(),
