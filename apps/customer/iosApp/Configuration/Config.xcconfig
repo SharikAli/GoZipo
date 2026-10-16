@@ -5,3 +5,13 @@ PRODUCT_BUNDLE_IDENTIFIER=com.mobile.gozipo.GoZipo$(TEAM_ID)
 
 CURRENT_PROJECT_VERSION=1
 MARKETING_VERSION=1.0
+
+// Passkeys: the backend's WebAuthn RP ID (ride-hailing.webauthn.rp-id; today the same host as
+// APP_LINK_HOST in local.properties). It goes into the Associated Domains entitlement as
+// webcredentials:<host>, and the host must serve /.well-known/apple-app-site-association.
+// Update it whenever the tunnel restarts.
+PASSKEY_RP_ID=symptoms-rate-gravity-voluntary.trycloudflare.com
+// Debug builds fetch the association file straight from the host instead of Apple's CDN
+// (needs Developer Mode and Settings > Developer > Associated Domains Development on a device)
+ASSOCIATED_DOMAINS_MODE[config=Debug]=?mode=developer
+ASSOCIATED_DOMAINS_MODE[config=Release]=

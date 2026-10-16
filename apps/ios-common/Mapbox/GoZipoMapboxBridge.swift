@@ -51,13 +51,16 @@ final class GoZipoMapboxMapView: NSObject, GoZipoMapboxMap {
         mapView.mapboxMap.onCameraChanged.observe { [weak self] _ in
             self?.reportCamera(isMoving: true)
         }.store(in: &cancelables)
+        
         mapView.mapboxMap.onMapIdle.observe { [weak self] _ in
             self?.reportCamera(isMoving: false)
         }.store(in: &cancelables)
+        
         let tap = mapView.mapboxMap.addInteraction(TapInteraction { [weak self] context in
             self?.listener?.onMapTap(coordinate: context.coordinate.toBridge())
             return false
         })
+        
         AnyCancelable(tap).store(in: &cancelables)
     }
 
