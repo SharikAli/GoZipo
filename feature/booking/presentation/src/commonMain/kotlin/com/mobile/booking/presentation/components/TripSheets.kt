@@ -125,12 +125,17 @@ fun TripSheet(
     }
 }
 
-/** The trip finished, or someone other than the customer canceled it. */
+/**
+ * The trip finished, or someone other than the customer canceled it.
+ *
+ * @param payment card payment for a completed ride ("Pay with card")
+ */
 @Composable
 fun FinishedSheet(
     ride: Ride,
     onAction: (BookingAction) -> Unit,
     modifier: Modifier = Modifier,
+    payment: @Composable () -> Unit = {},
 ) {
     val spacing = GoZipoTheme.spacing
     val extended = MaterialTheme.colorScheme.extended
@@ -169,6 +174,10 @@ fun FinishedSheet(
                     color = extended.textSecondary
                 )
             }
+        }
+        if (completed) {
+            // Optional card payment; cash stays the default and Done works as before
+            payment()
         }
         GoZipoDivider()
         RideStops(ride = ride)

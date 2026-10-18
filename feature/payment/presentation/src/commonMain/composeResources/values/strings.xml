@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Ride payment (finished ride sheet) -->
+    <string name="pay_with_card">Pay with card</string>
+    <string name="pay_amount">Pay %1$s</string>
+    <string name="pay_in_cash_instead">Pay in cash instead</string>
+    <string name="payment_method_label">Payment method</string>
+    <string name="payment_method_choose">Choose</string>
+    <string name="payment_method_change">Change</string>
+    <string name="payment_verifying">Confirming your payment…</string>
+    <string name="payment_processing">Your payment is processing. We\'ll let you know when it\'s done.</string>
+    <string name="payment_check_again">Check again</string>
+    <string name="payment_paid_title">Paid by card</string>
+    <string name="payment_paid_body">%1$s paid. No cash needed.</string>
+    <string name="payment_refunded">This card payment was refunded.</string>
+    <string name="payment_failed">Payment failed. Try again or pay in cash.</string>
+    <string name="payment_unavailable">Card payments are unavailable right now. Please pay in cash.</string>
+    <string name="payment_already_paid">This ride is already paid.</string>
+    <string name="payment_not_payable">This ride can\'t be paid by card.</string>
+    <string name="payment_load_failed">Couldn\'t load payment methods. Try again.</string>
+
+    <!-- Payment methods screen -->
+    <string name="payment_methods_title">Payment methods</string>
+    <string name="payment_methods_subtitle">Visa and Mastercard. Google Pay and Apple Pay appear at checkout when available.</string>
+    <string name="payment_methods_empty">No saved cards yet. Add one to pay faster after your rides.</string>
+    <string name="add_card">Add card</string>
+    <string name="save_card">Save card</string>
+    <string name="card_saved">Card saved</string>
+    <string name="card_removed">Card removed</string>
+    <string name="remove_card">Remove card</string>
+    <string name="card_expires">Expires %1$s/%2$s</string>
+    <string name="card_ending">%1$s •••• %2$s</string>
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
+    <string name="back">Back</string>
+</resources>

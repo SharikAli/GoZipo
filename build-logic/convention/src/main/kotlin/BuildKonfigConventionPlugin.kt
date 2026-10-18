@@ -44,6 +44,14 @@ class BuildKonfigConventionPlugin: Plugin<Project> {
                         localProperties.getProperty("MAPBOX_SIMULATE_NAVIGATION") ?: "false"
                     )
 
+                    // Card payment UI: PAYMENT_SHEET (default), FLOW_CONTROLLER or EMBEDDED. A build
+                    // choice for trying each Stripe UI; customers never pick it.
+                    buildConfigField(
+                        FieldSpec.Type.STRING,
+                        "STRIPE_PAYMENT_UI",
+                        localProperties.getProperty("STRIPE_PAYMENT_UI") ?: "PAYMENT_SHEET"
+                    )
+
                     // HTTP logging; sensitive values are masked unless HTTP_LOG_SENSITIVE_DATA=true (development only)
                     buildConfigField(
                         FieldSpec.Type.BOOLEAN,

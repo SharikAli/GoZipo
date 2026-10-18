@@ -41,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mobile.core.designsystem.components.buttons.GoZipoIconButton
 import com.mobile.core.designsystem.components.buttons.GoZipoIconButtonStyle
 import com.mobile.core.designsystem.components.map.DestinationMarker
+import com.mobile.core.designsystem.components.map.GoZipoMapZoomControls
 import com.mobile.core.designsystem.components.map.PickupMarker
 import com.mobile.core.designsystem.components.sheets.GoZipoMapSheetScaffold
 import com.mobile.core.designsystem.theme.GoZipoTheme
@@ -68,6 +69,8 @@ import gozipo.feature.driving.presentation.generated.resources.menu
 import gozipo.feature.driving.presentation.generated.resources.menu_earnings
 import gozipo.feature.driving.presentation.generated.resources.menu_vehicle
 import gozipo.feature.driving.presentation.generated.resources.my_location
+import gozipo.feature.driving.presentation.generated.resources.zoom_in
+import gozipo.feature.driving.presentation.generated.resources.zoom_out
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -154,6 +157,7 @@ fun DrivingScreen(
         },
         mapOverlay = {
             MapControls(state = state, onAction = onAction)
+            MapZoomButtons(cameraState = cameraState, sheetPeekHeight = peekHeight)
         },
         sheetContent = {
             val modifier = Modifier
@@ -270,6 +274,26 @@ private fun BoxScope.MapControls(
             style = GoZipoIconButtonStyle.MAP
         )
     }
+}
+
+/**
+ * +/- above the sheet's top edge, on the right. The extra 40 dp keeps Mapbox's attribution
+ * button (bottom right of the visible map, required by its terms) clear.
+ */
+@Composable
+private fun BoxScope.MapZoomButtons(cameraState: MapCameraState, sheetPeekHeight: Dp) {
+    val spacing = GoZipoTheme.spacing
+    GoZipoMapZoomControls(
+        onZoomInClick = cameraState::zoomIn,
+        onZoomOutClick = cameraState::zoomOut,
+        zoomInContentDescription = stringResource(Res.string.zoom_in),
+        zoomOutContentDescription = stringResource(Res.string.zoom_out),
+        zoomInEnabled = cameraState.canZoomIn,
+        zoomOutEnabled = cameraState.canZoomOut,
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(end = spacing.lg, bottom = sheetPeekHeight + 40.dp)
+    )
 }
 
 @Composable

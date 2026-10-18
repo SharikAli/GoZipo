@@ -315,6 +315,19 @@ Like the customer screen, the rider screen mirrors the backend and resyncs (`GET
 
 ## Phase 8: Hardening
 
+### Card payments (Stripe)
+
+Customer app only; cash stays the default and the rider app is unchanged. After a completed ride the finished sheet offers "Pay with card"; the Done button and the cash flow work as before.
+
+- [x] Backend `:payment` module (stripe-java 33.4.2): one Stripe Customer per user (`stripe_customers`), one payment per ride (`ride_payments`, unique per ride) whose PaymentIntent is reused across attempts, so a ride can't be charged twice. Endpoints under `/api/payments` (customer role): `checkout-config` (customer + CustomerSession for saved cards), `setup-intents`, `rides/{id}` (status; reads the intent back from Stripe while an attempt is open), `rides/{id}/intent`, `cards` (list, delete). Rides are read through `PayableRideLookup` (`:common`, implemented by `:ride`)
+- [x] Idempotency: creating calls require an `Idempotency-Key` header (one per attempt, reused for that attempt's retry); Stripe calls carry keys built from our ids and the app's key; the intent is created under a row lock
+- [x] Webhook `POST /api/payments/webhook` (public, verified by `Stripe-Signature`, excluded from the IP rate limit): `payment_intent.succeeded/processing/payment_failed/canceled`, `charge.refunded`; each event id stored once (`stripe_webhook_events`), settled payments never move backwards. Changes go to `:ride` over RabbitMQ (`PaymentEvent.RidePaymentUpdated`, after commit), which marks the ride `paymentMethod = CARD` and sends `PAYMENT_UPDATED` on the socket (push fallback: "Payment received" to the customer, "Paid by card, no cash to collect" to the rider)
+- [x] App: `:core:payment:api` (provider-free `rememberCheckout` / `CheckoutController`, `PaymentUiMode`) and `:core:payment:stripe` (Android stripe-android 23.21.0; iOS StripePaymentSheet 26.12.1 through `GoZipoStripeBridge.swift`). `STRIPE_PAYMENT_UI` in `local.properties` picks PaymentSheet (default), FlowController or the Embedded Payment Element; customers never choose. Cards (Visa, Mastercard only), Google Pay (Android), Apple Pay (iOS, needs a merchant ID). Deferred intents: Stripe asks for the intent when the customer confirms
+- [x] `:feature:payment:*`: "Pay with card" on the finished sheet (paid only once the backend confirms: realtime update plus polling), Payment methods screen from the menu (saved cards, add with a SetupIntent, remove)
+- [ ] End-to-end test with Stripe test keys and `stripe listen`: card success, 3DS (`4000 0025 0000 3155`), decline (`4000 0000 0000 9995`), Google Pay test card, Apple Pay on a device; all three `STRIPE_PAYMENT_UI` modes on Android and iOS
+- [ ] Production: live keys, webhook endpoint in the Stripe dashboard, Apple Pay merchant certificate, Google Pay production access; R8 rules for Stripe if needed
+- [ ] Refunds and disputes are only recorded (REFUNDED); no admin flow yet
+
 - [ ] Error and offline handling across ride flows; WebSocket reconnect and resync from the server
 - [ ] Process death and app restart in the middle of a ride
 - [ ] Rate limits and abuse checks on ride endpoints

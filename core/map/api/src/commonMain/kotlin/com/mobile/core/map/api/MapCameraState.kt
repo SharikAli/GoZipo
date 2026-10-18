@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 class MapCameraState(initialPosition: MapCameraPosition) {
 
     companion object {
+        private const val ZOOM_STEP = 1.0
+
         val Saver: Saver<MapCameraState, List<Double>> = Saver(
             save = {
                 listOf(it.position.target.latitude, it.position.target.longitude, it.position.zoom, it.position.bearing)
@@ -41,6 +43,14 @@ class MapCameraState(initialPosition: MapCameraPosition) {
     var isMoving: Boolean by mutableStateOf(false)
         private set
 
+    /** True while the user can still zoom in / out (the +/- buttons). */
+    val canZoomIn: Boolean get() = targetZoom < MapCameraPosition.MAX_ZOOM
+    val canZoomOut: Boolean get() = targetZoom > MapCameraPosition.MIN_ZOOM
+
+    /** Where a +/- tap is heading, so quick taps add up instead of reading a mid-animation zoom. */
+    private var pendingZoom: Double? by mutableStateOf(null)
+    private val targetZoom: Double get() = pendingZoom ?: position.zoom
+
     private val _commands = Channel<CameraCommand>(Channel.CONFLATED)
 
     /** Pending camera moves, consumed by the provider. */
@@ -49,6 +59,19 @@ class MapCameraState(initialPosition: MapCameraPosition) {
 
     fun moveTo(position: MapCameraPosition, animate: Boolean = true) {
         _commands.trySend(CameraCommand.MoveTo(position, animate))
+    }
+
+    /** One zoom level closer, keeping the same centre. */
+    fun zoomIn() = zoomBy(ZOOM_STEP)
+
+    /** One zoom level further out, keeping the same centre. */
+    fun zoomOut() = zoomBy(-ZOOM_STEP)
+
+    private fun zoomBy(delta: Double) {
+        val zoom = (targetZoom + delta).coerceIn(MapCameraPosition.MIN_ZOOM, MapCameraPosition.MAX_ZOOM)
+        if (zoom == targetZoom) return
+        pendingZoom = zoom
+        _commands.trySend(CameraCommand.MoveTo(position.copy(zoom = zoom), animate = true))
     }
 
     /** Zooms out or in so all [points] are visible inside [padding]. */
@@ -65,6 +88,7 @@ class MapCameraState(initialPosition: MapCameraPosition) {
     fun onCameraChanged(position: MapCameraPosition, isMoving: Boolean) {
         this.position = position
         this.isMoving = isMoving
+        if (!isMoving) pendingZoom = null
     }
 }
 

@@ -40,6 +40,8 @@ kermit = "2.0.6"
 mapbox = "11.32.1"
 # Navigation SDK release tested with exactly this Maps SDK version (see its release notes)
 mapbox-navigation = "3.32.1"
+# Stripe PaymentSheet / FlowController / Embedded Payment Element (iOS: stripe-ios-spm, same release train)
+stripe-android = "23.21.0"
 play-services-location = "21.4.0"
 
 # Compose
@@ -190,6 +192,9 @@ mapbox-maps-compose = { module = "com.mapbox.extension:maps-compose-ndk27", vers
 mapbox-navigation-core = { module = "com.mapbox.navigationcore:navigation-ndk27", version.ref = "mapbox-navigation" }
 mapbox-navigation-ui-components = { module = "com.mapbox.navigationcore:ui-components-ndk27", version.ref = "mapbox-navigation" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
+
+# Payment
+stripe-paymentsheet = { module = "com.stripe:paymentsheet", version.ref = "stripe-android" }
 
 # Logging
 touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }

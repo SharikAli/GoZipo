@@ -11,6 +11,7 @@ sealed interface BookingAction {
     data class OnMapClick(val point: GeoPoint) : BookingAction
     data object OnRecenterClick : BookingAction
     data object OnLogoutClick : BookingAction
+    data object OnPaymentMethodsClick : BookingAction
 
     data class OnOpenSearch(val target: SearchTarget) : BookingAction
     data object OnCloseSearch : BookingAction

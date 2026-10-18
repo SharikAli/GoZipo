@@ -15,3 +15,8 @@ PASSKEY_RP_ID=symptoms-rate-gravity-voluntary.trycloudflare.com
 // (needs Developer Mode and Settings > Developer > Associated Domains Development on a device)
 ASSOCIATED_DOMAINS_MODE[config=Debug]=?mode=developer
 ASSOCIATED_DOMAINS_MODE[config=Release]=
+
+// Apple Pay (Stripe): merchant ID registered in the Apple Developer portal (merchant.…), with
+// Stripe's Apple Pay certificate. Also add the Apple Pay capability with this merchant in
+// Signing & Capabilities. Blank hides Apple Pay; cards still work.
+STRIPE_APPLE_MERCHANT_ID=

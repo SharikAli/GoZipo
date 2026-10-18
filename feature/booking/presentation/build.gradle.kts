@@ -16,6 +16,7 @@ kotlin {
                 implementation(projects.core.designsystem)
                 implementation(projects.core.presentation)
                 implementation(projects.core.map.api)
+                implementation(projects.feature.payment.presentation)
 
                 implementation(libs.bundles.koin.common)
 

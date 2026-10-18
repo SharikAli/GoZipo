@@ -8,7 +8,10 @@ struct iOSApp: App {
     @UIApplicationDelegateAdaptor(GoZipoAppDelegate.self) var appDelegate
     
     init() {
-        IosInitKoinKt.doInitKoin(mapboxFactory: GoZipoMapboxBridgeFactory())
+        IosInitKoinKt.doInitKoin(
+            mapboxFactory: GoZipoMapboxBridgeFactory(),
+            stripeFactory: GoZipoStripeBridgeFactory()
+        )
     }
     
     var body: some Scene {

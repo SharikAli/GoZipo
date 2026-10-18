@@ -19,6 +19,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>GoZipoAppleMerchantId</key>
+	<string>$(STRIPE_APPLE_MERCHANT_ID)</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

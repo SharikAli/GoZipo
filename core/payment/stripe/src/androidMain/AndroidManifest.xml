@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Google Pay in Stripe's payment UIs -->
+        <!-- Required by the Google Wallet API for Google Pay to appear at
+             all in PaymentSheet - without this, isReadyToPay() just
+             returns false and the Google Pay row is silently omitted
+             (no error, no crash). -->
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+    </application>
+
+</manifest>

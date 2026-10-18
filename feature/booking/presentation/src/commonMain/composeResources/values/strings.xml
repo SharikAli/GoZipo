@@ -27,8 +27,11 @@
     <string name="back">Back</string>
     <string name="clear">Clear</string>
     <string name="my_location">My location</string>
+    <string name="zoom_in">Zoom in</string>
+    <string name="zoom_out">Zoom out</string>
     <string name="menu">Menu</string>
     <string name="log_out">Log out</string>
+    <string name="payment_methods">Payment methods</string>
 
     <!-- Location -->
     <string name="location_permission_denied">Location permission is off. Tap the location button to allow it.</string>
@@ -70,7 +73,7 @@
 
     <!-- Finished -->
     <string name="trip_completed_title">You've arrived</string>
-    <string name="trip_completed_pay">Pay %1$s in cash</string>
+    <string name="trip_completed_pay">Pay %1$s in cash or by card</string>
     <string name="trip_cancelled_by_rider">Your driver cancelled the ride</string>
     <string name="trip_cancelled_by_system">The search was stopped</string>
     <string name="trip_cancelled_by_customer">You cancelled the ride</string>

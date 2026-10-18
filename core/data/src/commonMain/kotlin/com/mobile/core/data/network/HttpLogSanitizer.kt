@@ -25,7 +25,10 @@ object HttpLogSanitizer {
         "refreshToken",
         "token",
         "credentialJson",
-        "requestJson"
+        "requestJson",
+        // Stripe: PaymentIntent/SetupIntent and CustomerSession secrets
+        "clientSecret",
+        "customerSessionClientSecret"
     )
 
     private val fieldAlternation = sensitiveFields.joinToString("|")

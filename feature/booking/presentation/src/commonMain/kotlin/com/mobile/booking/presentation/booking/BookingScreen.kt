@@ -1,5 +1,9 @@
 package com.mobile.booking.presentation.booking
 
+import gozipo.feature.booking.presentation.generated.resources.payment_methods
+import com.mobile.ride.domain.Ride
+import com.mobile.payment.presentation.ride.RidePaymentRoot
+import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,6 +52,7 @@ import com.mobile.booking.presentation.util.label
 import com.mobile.core.designsystem.components.buttons.GoZipoIconButton
 import com.mobile.core.designsystem.components.buttons.GoZipoIconButtonStyle
 import com.mobile.core.designsystem.components.map.DestinationMarker
+import com.mobile.core.designsystem.components.map.GoZipoMapZoomControls
 import com.mobile.core.designsystem.components.map.PickupMarker
 import com.mobile.core.designsystem.components.map.RiderMarker
 import com.mobile.core.designsystem.components.map.SearchingPulse
@@ -73,6 +78,8 @@ import gozipo.feature.booking.presentation.generated.resources.log_out
 import gozipo.feature.booking.presentation.generated.resources.menu
 import gozipo.feature.booking.presentation.generated.resources.my_location
 import gozipo.feature.booking.presentation.generated.resources.pickup_label
+import gozipo.feature.booking.presentation.generated.resources.zoom_in
+import gozipo.feature.booking.presentation.generated.resources.zoom_out
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -83,6 +90,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun BookingRoot(
     onLogoutClick: () -> Unit,
+    onPaymentMethodsClick: () -> Unit,
     viewModel: BookingViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -153,8 +161,12 @@ fun BookingRoot(
         onAction = { action ->
             when (action) {
                 BookingAction.OnLogoutClick -> onLogoutClick()
+                BookingAction.OnPaymentMethodsClick -> onPaymentMethodsClick()
                 else -> viewModel.onAction(action)
             }
+        },
+        finishedRidePayment = { ride ->
+            RidePaymentRoot(rideId = ride.id, fare = ride.agreedFare ?: ride.offeredFare)
         }
     )
 }
@@ -166,6 +178,7 @@ fun BookingScreen(
     cameraState: MapCameraState,
     snackbarHostState: SnackbarHostState,
     onAction: (BookingAction) -> Unit,
+    finishedRidePayment: @Composable (Ride) -> Unit = {},
 ) {
     val spacing = GoZipoTheme.spacing
     val stage = state.stage
@@ -191,6 +204,7 @@ fun BookingScreen(
             },
             mapOverlay = {
                 MapControls(state = state, onAction = onAction)
+                MapZoomButtons(cameraState = cameraState, sheetPeekHeight = peekHeight)
             },
             sheetContent = {
                 val modifier = Modifier
@@ -206,9 +220,10 @@ fun BookingScreen(
                     BookingStage.TRIP -> TripSheet(state, onAction, modifier)
                     BookingStage.FINISHED -> state.finishedRide?.let {
                         FinishedSheet(
-                            it,
-                            onAction,
-                            modifier
+                            ride = it,
+                            onAction = onAction,
+                            modifier = modifier,
+                            payment = { finishedRidePayment(it) }
                         )
                     }
                 }
@@ -300,7 +315,10 @@ private fun BoxScope.MapControls(
                     .statusBarsPadding()
                     .padding(spacing.lg)
             ) {
-                AccountMenu(onLogoutClick = { onAction(BookingAction.OnLogoutClick) })
+                AccountMenu(
+                    onPaymentMethodsClick = { onAction(BookingAction.OnPaymentMethodsClick) },
+                    onLogoutClick = { onAction(BookingAction.OnLogoutClick) }
+                )
                 Box(modifier = Modifier.weight(1f))
                 RecenterButton(onAction)
             }
@@ -364,6 +382,26 @@ private fun BoxScope.MapControls(
     }
 }
 
+/**
+ * +/- above the sheet's top edge, on the right. The extra 40 dp keeps Mapbox's attribution
+ * button (bottom right of the visible map, required by its terms) clear.
+ */
+@Composable
+private fun BoxScope.MapZoomButtons(cameraState: MapCameraState, sheetPeekHeight: Dp) {
+    val spacing = GoZipoTheme.spacing
+    GoZipoMapZoomControls(
+        onZoomInClick = cameraState::zoomIn,
+        onZoomOutClick = cameraState::zoomOut,
+        zoomInContentDescription = stringResource(Res.string.zoom_in),
+        zoomOutContentDescription = stringResource(Res.string.zoom_out),
+        zoomInEnabled = cameraState.canZoomIn,
+        zoomOutEnabled = cameraState.canZoomOut,
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(end = spacing.lg, bottom = sheetPeekHeight + 40.dp)
+    )
+}
+
 @Composable
 private fun RecenterButton(onAction: (BookingAction) -> Unit) {
     GoZipoIconButton(
@@ -375,7 +413,10 @@ private fun RecenterButton(onAction: (BookingAction) -> Unit) {
 }
 
 @Composable
-private fun AccountMenu(onLogoutClick: () -> Unit) {
+private fun AccountMenu(
+    onPaymentMethodsClick: () -> Unit,
+    onLogoutClick: () -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     Box {
         GoZipoIconButton(
@@ -385,6 +426,14 @@ private fun AccountMenu(onLogoutClick: () -> Unit) {
             style = GoZipoIconButtonStyle.MAP
         )
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.payment_methods)) },
+                leadingIcon = { Icon(Icons.Default.CreditCard, contentDescription = null) },
+                onClick = {
+                    expanded = false
+                    onPaymentMethodsClick()
+                }
+            )
             DropdownMenuItem(
                 text = { Text(stringResource(Res.string.log_out)) },
                 leadingIcon = { Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null) },

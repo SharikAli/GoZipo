@@ -114,7 +114,7 @@ class BookingViewModel(
             is BookingAction.OnCameraIdle -> onCameraIdle(action.center)
             is BookingAction.OnMapClick -> onMapClick(action.point)
             BookingAction.OnRecenterClick -> recenter()
-            BookingAction.OnLogoutClick -> Unit
+            BookingAction.OnLogoutClick, BookingAction.OnPaymentMethodsClick -> Unit
 
             is BookingAction.OnOpenSearch -> openSearch(action.target)
             BookingAction.OnCloseSearch -> closeSearch()
