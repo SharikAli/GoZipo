@@ -2,10 +2,10 @@
 
 GoZipo is a ride-hailing project built with **Kotlin Multiplatform** and **Compose Multiplatform**. One repository builds two apps for **Android and iOS**, with the UI fully shared in Compose:
 
-| App | Who it's for | Android app ID |
-|---|---|---|
-| **GoZipo** | Customers who book rides | `com.mobile.gozipo` |
-| **GoZipo Rider** | Riders (drivers) who take rides | `com.mobile.gozipo.rider` |
+| App | Who it's for |
+|---|---|
+| **GoZipo** | Customers who book rides
+| **GoZipo Rider** | Riders (drivers) who take rides
 
 Main features:
 
@@ -115,35 +115,3 @@ GoZipo/
 ```
 
 Each feature is split into `domain` (interfaces and models), `data` (Ktor implementations) and `presentation` (Compose screens and ViewModels). Mapbox and Stripe are used only inside their `core` modules, so either provider can be replaced without touching the features.
-
-## Getting started
-
-### Requirements
-
-- Android Studio or IntelliJ IDEA with the Kotlin Multiplatform plugin
-- Xcode for the iOS apps
-- The GoZipo backend running locally on port 8080
-
-### Configuration
-
-Add these to `local.properties`:
-
-```properties
-API_KEY=...                  # required: sent as the x-api-key header
-APP_LINK_HOST=...            # required: public HTTPS host of the email links
-MAPBOX_ACCESS_TOKEN=pk....   # optional: Mapbox public token (maps show a placeholder without it)
-STRIPE_PAYMENT_UI=PAYMENT_SHEET   # optional: PAYMENT_SHEET, FLOW_CONTROLLER or EMBEDDED
-```
-
-Both Android apps also need a `google-services.json` from the Firebase project.
-
-### Build and run
-
-- Android: `./gradlew :apps:customer:androidApp:assembleDebug` or `./gradlew :apps:rider:androidApp:assembleDebug`
-- iOS: open `apps/customer/iosApp` or `apps/rider/iosApp` in Xcode and run
-
-### Tests
-
-- All tests in a module: `./gradlew :core:domain:allTests`
-- iOS simulator: `./gradlew :feature:payment:presentation:iosSimulatorArm64Test`
-- Android host: `./gradlew :apps:customer:shared:testAndroidHostTest`
