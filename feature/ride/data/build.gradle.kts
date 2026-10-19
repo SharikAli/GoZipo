@@ -1,0 +1,31 @@
+plugins {
+    alias(libs.plugins.convention.kmp.library)
+}
+
+kotlin {
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(libs.kotlin.stdlib)
+
+                implementation(projects.core.data)
+                implementation(projects.core.domain)
+                implementation(projects.feature.ride.domain)
+
+                implementation(libs.bundles.ktor.common)
+                implementation(libs.koin.core)
+                implementation(libs.kotlinx.datetime)
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.ktor.client.mock)
+            }
+        }
+    }
+
+}

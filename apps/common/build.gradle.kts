@@ -10,8 +10,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(projects.core.domain)
                 implementation(projects.core.data)
+                implementation(projects.core.domain)
+
                 implementation(projects.feature.auth.domain)
 
                 implementation(libs.bundles.koin.common)

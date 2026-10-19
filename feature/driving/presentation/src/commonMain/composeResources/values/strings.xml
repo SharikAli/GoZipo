@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Map controls -->
+    <string name="menu">Menu</string>
+    <string name="my_location">My location</string>
+    <string name="zoom_in">Zoom in</string>
+    <string name="zoom_out">Zoom out</string>
+    <string name="log_out">Log out</string>
+    <string name="menu_vehicle">My vehicle</string>
+    <string name="menu_earnings">Earnings and rides</string>
+    <string name="back">Back</string>
+
+    <!-- Availability -->
+    <string name="status_offline">You're offline</string>
+    <string name="status_offline_hint">Go online to get ride requests near you.</string>
+    <string name="status_online">You're online</string>
+    <string name="status_online_hint">New requests near you show up here.</string>
+    <string name="go_online">Go online</string>
+    <string name="go_offline">Go offline</string>
+    <string name="no_vehicle_title">Add your vehicle</string>
+    <string name="no_vehicle_hint">Customers see your vehicle and plate. You need one before going online.</string>
+    <string name="add_vehicle">Add vehicle</string>
+    <string name="status_failed">Couldn't load your status.</string>
+    <string name="waiting_for_requests">Waiting for requests…</string>
+
+    <!-- Requests -->
+    <string name="requests_title">Requests near you</string>
+    <string name="request_pickup_away">Pickup %1$s away</string>
+    <string name="request_trip_summary">%1$s · %2$s</string>
+    <string name="request_customer_fare">Customer's fare</string>
+    <string name="request_your_offer">Your offer</string>
+    <string name="accept_for">Accept for %1$s</string>
+    <string name="offer_amount">Offer %1$s</string>
+    <string name="offer_sent">Offer sent: %1$s</string>
+    <string name="offer_waiting">Waiting for the customer…</string>
+    <string name="withdraw_offer">Withdraw</string>
+    <string name="fare_decrease">Lower offer</string>
+    <string name="fare_increase">Raise offer</string>
+
+    <!-- Trip -->
+    <string name="trip_to_pickup">Pick up %1$s</string>
+    <string name="trip_at_pickup">Waiting for %1$s</string>
+    <string name="trip_in_progress">Drive to the destination</string>
+    <string name="trip_fare">Fare</string>
+    <string name="payment_cash">Cash</string>
+    <string name="navigate_to_pickup">Navigate to pickup</string>
+    <string name="navigate_to_destination">Navigate to destination</string>
+    <string name="mark_arrived">I've arrived</string>
+    <string name="start_trip">Start trip</string>
+    <string name="complete_trip">Complete trip</string>
+    <string name="cancel_ride">Cancel the ride</string>
+    <string name="pickup_label">Pickup</string>
+    <string name="dropoff_label">Destination</string>
+
+    <!-- Finished -->
+    <string name="finished_collect">Collect %1$s in cash</string>
+    <string name="finished_completed">Trip completed</string>
+    <string name="finished_cancelled_by_customer">The customer canceled the ride</string>
+    <string name="finished_cancelled_by_you">You canceled the ride</string>
+    <string name="finished_cancelled_by_system">The ride was cancelled</string>
+    <string name="done">Done</string>
+
+    <!-- Vehicle -->
+    <string name="vehicle_title_add">Add your vehicle</string>
+    <string name="vehicle_title_edit">Your vehicle</string>
+    <string name="vehicle_subtitle">You get requests for this vehicle type. Changing it takes you offline.</string>
+    <string name="vehicle_type">Vehicle type</string>
+    <string name="vehicle_make">Make</string>
+    <string name="vehicle_make_hint">Suzuki</string>
+    <string name="vehicle_model">Model</string>
+    <string name="vehicle_model_hint">Mehran</string>
+    <string name="vehicle_color">Colour</string>
+    <string name="vehicle_color_hint">White</string>
+    <string name="vehicle_plate">Plate number</string>
+    <string name="vehicle_plate_hint">ABC-123</string>
+    <string name="save">Save</string>
+    <string name="vehicle_saved">Vehicle saved</string>
+
+    <!-- History -->
+    <string name="history_title">Earnings and rides</string>
+    <string name="earnings_today">Today</string>
+    <string name="earnings_week">Last 7 days</string>
+    <string name="earnings_trips">%1$s trips</string>
+    <string name="history_empty">No rides yet</string>
+    <string name="history_failed">Couldn't load your rides.</string>
+    <string name="history_status_completed">Completed</string>
+    <string name="history_status_cancelled">Cancelled</string>
+    <string name="retry">Retry</string>
+
+    <!-- Location -->
+    <string name="location_needed">Allow location to go online. Customers need to see where you are.</string>
+    <string name="location_services_disabled">Turn on location in your device settings.</string>
+    <string name="location_unavailable">Couldn't find your location.</string>
+
+    <!-- Errors -->
+    <string name="error_ride_not_available">This ride is no longer available.</string>
+    <string name="error_offer_out_of_range">That offer isn't allowed. Adjust it and try again.</string>
+    <string name="error_ride_changed">This ride changed. Showing the latest status.</string>
+    <string name="error_plate_taken">This plate number is already registered to another rider.</string>
+    <string name="error_vehicle_invalid">Check the vehicle details and try again.</string>
+    <string name="error_went_offline">You went offline. Go online again to get requests.</string>
+</resources>

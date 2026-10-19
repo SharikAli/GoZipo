@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A1C0FFEE0000000000000014 /* MapboxMaps in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000013 /* MapboxMaps */; };
+		A1C0FFEE0000000000000017 /* MapboxNavigationCore in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000016 /* MapboxNavigationCore */; };
+		A1C0FFEE0000000000000019 /* MapboxNavigationUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000018 /* MapboxNavigationUIKit */; };
+		A1C0FFEE0000000000000104 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000103 /* FirebaseCore */; };
+		A1C0FFEE0000000000000106 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = A1C0FFEE0000000000000105 /* FirebaseMessaging */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		63787543C21A13D9AE77FE86 /* GoZipoRider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoZipoRider.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -26,6 +34,18 @@
 			path = Configuration;
 			sourceTree = "<group>";
 		};
+		A1C0FFEE0000000000000011 /* Mapbox */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = Mapbox;
+			path = "../../ios-common/Mapbox";
+			sourceTree = "<group>";
+		};
+		A1C0FFEE0000000000000101 /* Push */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			name = Push;
+			path = "../../ios-common/Push";
+			sourceTree = "<group>";
+		};
 		DD237F420F561247FD29DF19 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -41,6 +61,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1C0FFEE0000000000000014 /* MapboxMaps in Frameworks */,
+				A1C0FFEE0000000000000104 /* FirebaseCore in Frameworks */,
+				A1C0FFEE0000000000000106 /* FirebaseMessaging in Frameworks */,
+				A1C0FFEE0000000000000017 /* MapboxNavigationCore in Frameworks */,
+				A1C0FFEE0000000000000019 /* MapboxNavigationUIKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +77,8 @@
 			children = (
 				42C9A272373E59EFE514B873 /* Configuration */,
 				DD237F420F561247FD29DF19 /* iosApp */,
+				A1C0FFEE0000000000000011 /* Mapbox */,
+				A1C0FFEE0000000000000101 /* Push */,
 				FFF00BA770278723A8DD1816 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,10 +108,17 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				A1C0FFEE0000000000000011 /* Mapbox */,
+				A1C0FFEE0000000000000101 /* Push */,
 				DD237F420F561247FD29DF19 /* iosApp */,
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				A1C0FFEE0000000000000013 /* MapboxMaps */,
+				A1C0FFEE0000000000000103 /* FirebaseCore */,
+				A1C0FFEE0000000000000105 /* FirebaseMessaging */,
+				A1C0FFEE0000000000000016 /* MapboxNavigationCore */,
+				A1C0FFEE0000000000000018 /* MapboxNavigationUIKit */,
 			);
 			productName = iosApp;
 			productReference = 63787543C21A13D9AE77FE86 /* GoZipoRider.app */;
@@ -114,6 +148,11 @@
 			);
 			mainGroup = 9FDD264B38251573FE19E512;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */,
+				A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = FFF00BA770278723A8DD1816 /* Products */;
 			projectDirPath = "";
@@ -238,6 +277,7 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -249,6 +289,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GoZipo Rider uses your location to receive nearby ride requests and share your position during a trip.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "audio location remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -327,6 +368,7 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = iosApp/iosApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
@@ -338,6 +380,7 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GoZipo Rider uses your location to receive nearby ride requests and share your position during a trip.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "audio location remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -374,6 +417,61 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-maps-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 11.32.1;
+			};
+		};
+		A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mapbox/mapbox-navigation-ios.git";
+			requirement = {
+				kind = exactVersion;
+				version = 3.32.1;
+			};
+		};
+		A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.15.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1C0FFEE0000000000000013 /* MapboxMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000012 /* XCRemoteSwiftPackageReference "mapbox-maps-ios" */;
+			productName = MapboxMaps;
+		};
+		A1C0FFEE0000000000000016 /* MapboxNavigationCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxNavigationCore;
+		};
+		A1C0FFEE0000000000000018 /* MapboxNavigationUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000015 /* XCRemoteSwiftPackageReference "mapbox-navigation-ios" */;
+			productName = MapboxNavigationUIKit;
+		};
+		A1C0FFEE0000000000000103 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		A1C0FFEE0000000000000105 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1C0FFEE0000000000000102 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1B4355B242863DE3EFACCA75 /* Project object */;
 }

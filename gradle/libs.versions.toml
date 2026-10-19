@@ -37,6 +37,12 @@ coil-network = "3.5.0"
 moko = "0.20.1"
 buildkonfig = "0.21.2"
 kermit = "2.0.6"
+mapbox = "11.32.1"
+# Navigation SDK release tested with exactly this Maps SDK version (see its release notes)
+mapbox-navigation = "3.32.1"
+# Stripe PaymentSheet / FlowController / Embedded Payment Element (iOS: stripe-ios-spm, same release train)
+stripe-android = "23.21.0"
+play-services-location = "21.4.0"
 
 # Compose
 compose-hot-reload = "1.2.0"
@@ -55,6 +61,8 @@ androidx-lifecycle = "2.11.0"
 androidx-runner = "1.6.2"
 androidx-test-core = "1.7.0"
 androidx-appcompat = "1.8.0"
+androidx-constraintlayout = "2.2.1"
+google-material = "1.12.0"
 androidx-credentials = "1.6.0"
 core-splashscreen = "1.2.0"
 androidx-espresso = "3.7.0"
@@ -74,6 +82,8 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "androidx-credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "androidx-credentials" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidx-activity" }
@@ -125,6 +135,7 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 
 # Kotlinx
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
@@ -138,6 +149,7 @@ koin-androidx-navigation = { group = "io.insert-koin", name = "koin-androidx-nav
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
@@ -173,6 +185,16 @@ moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "mok
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 moko-permissions-notifications = { module = "dev.icerock.moko:permissions-notifications", version.ref = "moko" }
 moko-permissions-location = { module = "dev.icerock.moko:permissions-location", version.ref = "moko" }
+
+# Maps and location
+mapbox-maps = { module = "com.mapbox.maps:android-ndk27", version.ref = "mapbox" }
+mapbox-maps-compose = { module = "com.mapbox.extension:maps-compose-ndk27", version.ref = "mapbox" }
+mapbox-navigation-core = { module = "com.mapbox.navigationcore:navigation-ndk27", version.ref = "mapbox-navigation" }
+mapbox-navigation-ui-components = { module = "com.mapbox.navigationcore:ui-components-ndk27", version.ref = "mapbox-navigation" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
+
+# Payment
+stripe-paymentsheet = { module = "com.stripe:paymentsheet", version.ref = "stripe-android" }
 
 # Logging
 touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }

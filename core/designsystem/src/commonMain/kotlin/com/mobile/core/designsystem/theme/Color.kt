@@ -55,7 +55,3 @@ val GoZipoBlue700 = Color(0xFF2E47C7)
 // Warning / rating star
 val GoZipoAmber400 = Color(0xFFFFC233)
 val GoZipoAmber600 = Color(0xFFE09B00)
-
-// Map overlays
-val GoZipoRouteDark = Color(0xFFE8E8EA)
-val GoZipoRouteLight = Color(0xFF1F1F21)

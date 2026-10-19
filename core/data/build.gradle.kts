@@ -26,6 +26,9 @@ kotlin {
             dependencies {
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.koin.compose)
+                implementation(libs.androidx.lifecycle.process)
+                implementation(libs.androidx.core.ktx)
+                implementation(libs.play.services.location)
 
                 implementation(project.dependencies.platform(libs.firebase.bom))
                 implementation(libs.firebase.messaging)

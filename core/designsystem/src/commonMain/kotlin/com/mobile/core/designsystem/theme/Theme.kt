@@ -101,8 +101,8 @@ val DarkExtendedColors = ExtendedColors(
     onPlateContainer = GoZipoBase0,
     switchTrackOff = GoZipoBase750,
 
-    mapRoute = GoZipoRouteDark,
-    mapRouteCasing = GoZipoBase900,
+    mapRoute = GoZipoLime500,
+    mapRouteCasing = GoZipoBase1000,
     mapPickupMarker = GoZipoBase0,
     mapDestinationMarker = GoZipoBase0,
     mapMarkerContent = GoZipoBase1000,
@@ -144,8 +144,8 @@ val LightExtendedColors = ExtendedColors(
     onPlateContainer = GoZipoBase1000,
     switchTrackOff = GoZipoBase200,
 
-    mapRoute = GoZipoRouteLight,
-    mapRouteCasing = GoZipoBase0,
+    mapRoute = GoZipoLime800,
+    mapRouteCasing = GoZipoLime900,
     mapPickupMarker = GoZipoBase1000,
     mapDestinationMarker = GoZipoBase1000,
     mapMarkerContent = GoZipoBase0,

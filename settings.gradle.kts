@@ -23,9 +23,17 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("androidx")
                 includeGroupAndSubgroups("com.android")
                 includeGroupAndSubgroups("com.google")
+                // Cronet, pulled in by the Mapbox SDK
+                includeGroupAndSubgroups("org.chromium")
             }
         }
         mavenCentral()
+        // Mapbox Maps SDK for Android (public repository, no credentials needed)
+        maven("https://api.mapbox.com/downloads/v2/releases/maven") {
+            mavenContent {
+                includeGroupAndSubgroups("com.mapbox")
+            }
+        }
     }
 }
 
@@ -42,6 +50,19 @@ include(":core:data")
 include(":core:presentation")
 include(":core:domain")
 include(":core:designsystem")
+include(":core:map:api")
+include(":core:map:mapbox")
+include(":core:map:navigation")
+include(":core:payment:api")
+include(":core:payment:stripe")
 include(":feature:auth:domain")
 include(":feature:auth:presentation")
 include(":feature:auth:data")
+include(":feature:ride:domain")
+include(":feature:ride:data")
+include(":feature:ride:presentation")
+include(":feature:driving:presentation")
+include(":feature:booking:presentation")
+include(":feature:payment:domain")
+include(":feature:payment:data")
+include(":feature:payment:presentation")

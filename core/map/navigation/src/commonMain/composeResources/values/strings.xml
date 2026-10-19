@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigation_close">End navigation</string>
+    <string name="navigation_mute">Mute voice guidance</string>
+    <string name="navigation_unmute">Unmute voice guidance</string>
+    <string name="navigation_overview">Show the whole route</string>
+    <string name="navigation_recenter">Follow my location</string>
+    <string name="navigation_finding_route">Finding a route…</string>
+    <string name="navigation_route_failed">Couldn\'t find a route. Check your connection and try again.</string>
+    <string name="navigation_retry">Retry</string>
+    <string name="navigation_unavailable">Navigation unavailable: %1$s</string>
+</resources>

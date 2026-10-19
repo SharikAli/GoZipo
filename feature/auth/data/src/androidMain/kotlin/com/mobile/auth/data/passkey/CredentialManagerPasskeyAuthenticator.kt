@@ -1,7 +1,6 @@
 package com.mobile.auth.data.passkey
 
 import android.os.Build
-import android.util.Log
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CreatePublicKeyCredentialResponse
 import androidx.credentials.CredentialManager
@@ -26,6 +25,7 @@ import androidx.credentials.exceptions.publickeycredential.GetPublicKeyCredentia
 import com.mobile.auth.domain.passkey.PasskeyAuthenticator
 import com.mobile.auth.domain.passkey.PasskeyError
 import com.mobile.core.data.platform.CurrentActivityProvider
+import com.mobile.core.domain.logging.GoZipoLogger
 import com.mobile.core.domain.util.Result
 import kotlinx.coroutines.CancellationException
 
@@ -37,12 +37,9 @@ import kotlinx.coroutines.CancellationException
  * credential JSON.
  */
 class CredentialManagerPasskeyAuthenticator(
-    private val activityProvider: CurrentActivityProvider
+    private val activityProvider: CurrentActivityProvider,
+    private val logger: GoZipoLogger
 ) : PasskeyAuthenticator {
-
-    private companion object {
-        const val TAG = "PasskeyAuthenticator"
-    }
 
     // Passkeys need Android 9+ (minSdk is 27)
     override val isSupported: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
@@ -68,7 +65,7 @@ class CredentialManagerPasskeyAuthenticator(
         } catch (e: CancellationException) {
             throw e
         } catch (e: CreateCredentialException) {
-            Log.w(TAG, "Passkey creation failed: ${e.type} ${e.errorMessage}")
+            logger.warn("Passkey creation failed: ${e.type} ${e.errorMessage}")
             Result.Failure(e.toPasskeyError())
         }
     }
@@ -100,7 +97,7 @@ class CredentialManagerPasskeyAuthenticator(
         } catch (e: CancellationException) {
             throw e
         } catch (e: GetCredentialException) {
-            Log.w(TAG, "Passkey sign-in failed: ${e.type} ${e.errorMessage}")
+            logger.warn("Passkey sign-in failed: ${e.type} ${e.errorMessage}")
             Result.Failure(e.toPasskeyError())
         }
     }

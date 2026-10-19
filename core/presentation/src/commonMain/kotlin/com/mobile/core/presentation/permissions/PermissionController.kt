@@ -6,12 +6,17 @@ import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.RequestCanceledException
 import dev.icerock.moko.permissions.location.LOCATION
 import dev.icerock.moko.permissions.notifications.REMOTE_NOTIFICATION
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class PermissionController(
     private val mokoPermissionsController: PermissionsController
 ) {
-    suspend fun requestPermission(permission: Permission): PermissionState {
-        return try {
+    // The system shows one permission dialog at a time; a concurrent request would be canceled
+    private val mutex = Mutex()
+
+    suspend fun requestPermission(permission: Permission): PermissionState = mutex.withLock {
+        try {
             mokoPermissionsController.providePermission(permission.toMokoPermission())
             PermissionState.GRANTED
         } catch (_: DeniedAlwaysException) {

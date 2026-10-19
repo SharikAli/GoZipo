@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fares -->
+    <string name="fare_amount">PKR%1$s</string>
+    <string name="fare_approximate">~PKR%1$s</string>
+    <string name="fare_recommended">Recommended fare</string>
+    <string name="fare_your_offer">Your offer</string>
+    <string name="fare_decrease">Lower fare</string>
+    <string name="fare_increase">Raise fare</string>
+    <string name="payment_cash">Cash</string>
+    <string name="payment">Payment</string>
+
+    <!-- Stops -->
+    <string name="pickup_finding_address">Finding address…</string>
+    <string name="pickup_move_map">Move the map to set pickup</string>
+    <string name="pickup_label">Pickup</string>
+    <string name="dropoff_where_to">Where to?</string>
+    <string name="dropoff_label">Destination</string>
+    <string name="dropped_pin">Dropped pin</string>
+    <string name="search_hint_pickup">Search pickup location</string>
+    <string name="search_hint_dropoff">Search destination</string>
+    <string name="search_choose_on_map">Choose on map</string>
+    <string name="search_no_results">No places found. Try another name, or use “Choose on map”.</string>
+    <string name="destination_pin_title">Set your destination</string>
+    <string name="destination_pin_move_map">Move the map to place the pin on your destination</string>
+    <string name="confirm_destination">Confirm destination</string>
+    <string name="back">Back</string>
+    <string name="clear">Clear</string>
+    <string name="my_location">My location</string>
+    <string name="zoom_in">Zoom in</string>
+    <string name="zoom_out">Zoom out</string>
+    <string name="menu">Menu</string>
+    <string name="log_out">Log out</string>
+    <string name="payment_methods">Payment methods</string>
+
+    <!-- Location -->
+    <string name="location_permission_denied">Location permission is off. Tap the location button to allow it.</string>
+    <string name="location_services_disabled">Turn on location in your device settings.</string>
+    <string name="location_unavailable">Couldn't find your location.</string>
+
+    <!-- Vehicles -->
+    <string name="trip_minutes">%1$s min</string>
+    <string name="trip_summary">%1$s km · about %2$s min</string>
+    <string name="loading_fares">Getting fares…</string>
+    <string name="fares_failed">Couldn't get fares. Try again.</string>
+    <string name="retry">Retry</string>
+    <string name="auto_accept">Auto-accept offer of %1$s</string>
+    <string name="find_offers">Find offers</string>
+
+    <!-- Searching -->
+    <string name="searching_title">Searching for drivers</string>
+    <string name="searching_round_ended">No driver accepted yet</string>
+    <string name="searching_round_ended_hint">Raise your fare or search again at the same price.</string>
+    <string name="all_drivers_verified">All drivers verified</string>
+    <string name="raise_fare">Raise fare</string>
+    <string name="search_again">Search again</string>
+    <string name="offers_title">Offers</string>
+    <string name="offer_counter">Counter-offer</string>
+    <string name="offer_accepts_fare">Accepts your fare</string>
+    <string name="offer_distance_away">%1$s away</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="cancel_ride">Cancel the ride</string>
+    <string name="cancel_search">Cancel search</string>
+
+    <!-- Trip -->
+    <string name="trip_driver_arriving">Driver is on the way</string>
+    <string name="trip_driver_arrived">Your driver has arrived</string>
+    <string name="trip_in_progress">On the way to your destination</string>
+    <string name="trip_your_current_ride">Your current ride</string>
+    <string name="driver_label">Driver</string>
+    <string name="vehicle_unknown">Vehicle details unavailable</string>
+
+    <!-- Finished -->
+    <string name="trip_completed_title">You've arrived</string>
+    <string name="trip_completed_pay">Pay %1$s in cash or by card</string>
+    <string name="trip_cancelled_by_rider">Your driver cancelled the ride</string>
+    <string name="trip_cancelled_by_system">The search was stopped</string>
+    <string name="trip_cancelled_by_customer">You cancelled the ride</string>
+    <string name="done">Done</string>
+    <string name="find_another_ride">Find another ride</string>
+
+    <!-- Errors -->
+    <string name="error_active_ride_exists">You already have a ride in progress.</string>
+    <string name="error_fare_out_of_range">That fare isn't allowed. Adjust it and try again.</string>
+    <string name="error_ride_changed">This ride changed. Showing the latest status.</string>
+    <string name="distance_meters">%1$s m</string>
+    <string name="distance_kilometers">%1$s km</string>
+</resources>

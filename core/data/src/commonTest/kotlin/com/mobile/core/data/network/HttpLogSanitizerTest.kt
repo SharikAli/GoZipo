@@ -58,4 +58,16 @@ class HttpLogSanitizerTest {
         assertTrue(HttpLogSanitizer.isSensitiveHeader("X-Api-Key"))
         assertFalse(HttpLogSanitizer.isSensitiveHeader("Content-Type"))
     }
+
+    @Test
+    fun masksStripeClientSecrets() {
+        val sanitized = HttpLogSanitizer.sanitize(
+            """{"customerId":"cus_1","customerSessionClientSecret":"cuss_secret_x","clientSecret":"pi_1_secret_y"}"""
+        )
+
+        assertEquals(
+            """{"customerId":"cus_1","customerSessionClientSecret":"$mask","clientSecret":"$mask"}""",
+            sanitized
+        )
+    }
 }
